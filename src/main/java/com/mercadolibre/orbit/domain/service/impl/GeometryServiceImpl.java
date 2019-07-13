@@ -12,9 +12,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class GeometryServiceImpl implements GeometryService {
 
+
+    /**
+     * LOCAL Point rotation about a GLOBAL gravity center
+     *
+     * @param point
+     * @param gravityCenter
+     * @param clockDirection
+     * @param degrees
+     * @return
+     */
     @Override
     public Point rotate(Point point, Point gravityCenter, ClockDirection clockDirection, Double degrees) {
-        return null;
+        double newX = Math.cos(degrees) * (point.getX() - gravityCenter.getX()) -
+                Math.sin(degrees) * (point.getY() - gravityCenter.getY()) +
+                gravityCenter.getX();
+
+        double newY = Math.sin(degrees) * (point.getX() - gravityCenter.getX()) +
+                Math.cos(degrees) * (point.getY() - gravityCenter.getY()) +
+                gravityCenter.getY();
+
+        return new Point(newX, newY);
     }
 
     @Override
