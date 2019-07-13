@@ -18,18 +18,20 @@ public class GeometryServiceImpl implements GeometryService {
      *
      * @param point
      * @param gravityCenter
-     * @param clockDirection
      * @param degrees
      * @return
      */
     @Override
-    public Point rotate(Point point, Point gravityCenter, ClockDirection clockDirection, Double degrees) {
-        double newX = Math.cos(degrees) * (point.getX() - gravityCenter.getX()) -
-                Math.sin(degrees) * (point.getY() - gravityCenter.getY()) +
+    public Point rotate(Point point, Point gravityCenter, double degrees) {
+
+        double radians = degreesToRadians(degrees);
+
+        double newX = Math.cos(radians) * (point.getX() - gravityCenter.getX()) -
+                Math.sin(radians) * (point.getY() - gravityCenter.getY()) +
                 gravityCenter.getX();
 
-        double newY = Math.sin(degrees) * (point.getX() - gravityCenter.getX()) +
-                Math.cos(degrees) * (point.getY() - gravityCenter.getY()) +
+        double newY = Math.sin(radians) * (point.getX() - gravityCenter.getX()) +
+                Math.cos(radians) * (point.getY() - gravityCenter.getY()) +
                 gravityCenter.getY();
 
         return new Point(newX, newY);
@@ -103,6 +105,19 @@ public class GeometryServiceImpl implements GeometryService {
 
     private ClockDirection triangleClockOrientation(Triangle triangle) {
         return triangleOrientation(triangle) > 0 ? ClockDirection.CLOCKWISE : ClockDirection.COUNTERCLOCKWISE;
+    }
+
+
+
+
+    /**
+     * Convert degrees to radians to perform rotation transformations over points
+     *
+     * @param degrees
+     * @return
+     */
+    private double degreesToRadians(double degrees) {
+        return degrees * 0.0174533;
     }
 
 }
