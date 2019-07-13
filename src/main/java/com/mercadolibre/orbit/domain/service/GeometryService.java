@@ -14,6 +14,6 @@ public interface GeometryService {
 
     boolean areCollinear(Point p1, Point p2, Point p3);
     boolean areCollinear(Point p1, Point p2, Point p3, Point p4);
-    boolean collide(Point point, Triangle triangle);
+    boolean detectCollision(Triangle triangle, Point point);
 
 }

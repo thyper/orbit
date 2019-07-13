@@ -18,6 +18,18 @@ public class Point {
     private Double y;
 
 
+    /**
+     * Constructors
+     */
+
+    public Point() {
+    }
+
+    public Point(Double x, Double y) {
+        this.x = x;
+        this.y = y;
+    }
+
 
 
     /**

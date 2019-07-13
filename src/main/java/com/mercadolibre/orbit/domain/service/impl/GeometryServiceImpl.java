@@ -49,12 +49,42 @@ public class GeometryServiceImpl implements GeometryService {
 
     @Override
     public boolean areCollinear(Point p1, Point p2, Point p3, Point p4) {
-        return false;
+        return areCollinear(p1, p2, p3) && areCollinear(p2, p3, p4);
     }
 
+
+    /**
+     * Compute Triangle & Point collision by triangles orientation
+     * http://www.dma.fi.upm.es/personal/mabellanas/tfcs/kirkpatrick/Aplicacion/algoritmos.htm
+     *
+     * @param triangle
+     * @param point
+     * @return
+     */
     @Override
-    public boolean collide(Point point, Triangle triangle) {
-        return false;
+    public boolean detectCollision(Triangle triangle, Point point) {
+
+        // Sliced triangles with Point
+        Triangle t1 = new Triangle(triangle.getP1(), triangle.getP2(), point);
+        Triangle t2 = new Triangle(triangle.getP2(), triangle.getP3(), point);
+        Triangle t3 = new Triangle(triangle.getP3(), triangle.getP1(), point);
+
+        return triangleClockOrientation(triangle) == triangleClockOrientation(t1) &&
+                triangleClockOrientation(t1) == triangleClockOrientation(t2) &&
+                triangleClockOrientation(t2) == triangleClockOrientation(t3);
+    }
+
+
+
+    private double triangleOrientation(Triangle triangle) {
+        return (triangle.getP1().getX() - triangle.getP3().getX()) *
+                (triangle.getP2().getY() - triangle.getP3().getY()) -
+                (triangle.getP1().getY() - triangle.getP3().getY()) *
+                (triangle.getP2().getX() - triangle.getP3().getX());
+    }
+
+    private ClockDirection triangleClockOrientation(Triangle triangle) {
+        return triangleOrientation(triangle) > 0 ? ClockDirection.CLOCKWISE : ClockDirection.COUNTERCLOCKWISE;
     }
 
 }
