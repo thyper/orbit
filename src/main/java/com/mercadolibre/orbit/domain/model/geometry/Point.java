@@ -3,8 +3,6 @@ package com.mercadolibre.orbit.domain.model.geometry;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "points")
 public class Point {
 
     @Id
@@ -28,6 +26,15 @@ public class Point {
     public Point(Double x, Double y) {
         this.x = x;
         this.y = y;
+    }
+
+
+    /**
+     * Methods
+     */
+
+    public Point add(Point point) {
+        return new Point(this.x + point.getX(), this.y + point.getY());
     }
 
 
