@@ -100,7 +100,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         // Calculate Weather
         Weather weather = new Weather();
-        
+
 
         return weather;
     }
