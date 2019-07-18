@@ -1,27 +1,18 @@
-package com.mercadolibre.orbit;
+package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.model.geometry.Point;
 import com.mercadolibre.orbit.domain.model.geometry.Triangle;
-import com.mercadolibre.orbit.domain.service.GeometryService;
-import com.mercadolibre.orbit.domain.service.impl.GeometryServiceImpl;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 
-@RunWith(SpringRunner.class)
-public class GeometryServiceTest {
+public class GeometryServiceTest extends GenericTest {
 
+    @Autowired
     private GeometryService geometryService;
 
-
-    @Before
-    public void configureServices() {
-        geometryService = new GeometryServiceImpl();
-    }
 
 
     /**

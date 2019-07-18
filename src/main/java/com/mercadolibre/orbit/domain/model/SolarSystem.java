@@ -17,11 +17,11 @@ public class SolarSystem {
 
     @NotNull
     private Date creationDate;
-
+/*
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable=false)
     private Set<Planet> planets;
-
+*/
     @NotNull
     private Double posX;
 
@@ -57,7 +57,7 @@ public class SolarSystem {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-
+/*
     public Set<Planet> getPlanets() {
         return planets;
     }
@@ -65,7 +65,7 @@ public class SolarSystem {
     public void setPlanets(Set<Planet> planets) {
         this.planets = planets;
     }
-
+*/
     public Double getPosX() {
         return posX;
     }
