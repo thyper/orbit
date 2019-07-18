@@ -15,23 +15,6 @@ public class Planet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Planet planet = (Planet) o;
-        return Objects.equals(id, planet.id) &&
-                Objects.equals(name, planet.name) &&
-                Objects.equals(solarSystem, planet.solarSystem) &&
-                Objects.equals(sunDistance, planet.sunDistance) &&
-                Objects.equals(degreesPerDay, planet.degreesPerDay) &&
-                rotationDirection == planet.rotationDirection;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, solarSystem);
-    }
 
     @NotNull
     private String name;

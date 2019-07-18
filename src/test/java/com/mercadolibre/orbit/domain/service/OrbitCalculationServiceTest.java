@@ -1,12 +1,14 @@
 package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
+import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.model.geometry.Point;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
+import com.mercadolibre.orbit.domain.service.exception.PlanetWithoutSolarSystemException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,20 +23,25 @@ import java.util.Set;
 public class OrbitCalculationServiceTest  extends GenericTest {
 
     @Autowired
+    private SolarSystemService solarSystemService;
+
+    @Autowired
     private PlanetService planetService;
+
+    @Autowired
+    private PlanetStatusService planetStatusService;
+
 
     @Autowired
     private OrbitCalculationService orbitCalculationService;
 
-    @Autowired
-    private SolarSystemService solarSystemService;
 
 
 
 
 
     @Test
-    public void testGetPlanetRotationPosition() {
+    public void testGetPlanetRotationPosition() throws PlanetWithoutSolarSystemException {
 
         SolarSystem solarSystem = new SolarSystem();
         solarSystem.setName("Solar System Test");
@@ -42,22 +49,43 @@ public class OrbitCalculationServiceTest  extends GenericTest {
         solarSystem.setPosX(0D);
         solarSystem.setPosY(0D);
 
+        // Save SolarSystem
         solarSystem = solarSystemService.createSolarSystem(solarSystem);
 
-        SolarSystem ss = solarSystemService.findById(solarSystem.getId());
-
-        Assert.assertNotNull(ss);
 
         Planet planet = new Planet();
         planet.setName("Ferengis Test Planet");
-        planet.setSolarSystem(ss);
+        planet.setSolarSystem(solarSystem);
         planet.setDegreesPerDay(3D);
         planet.setSunDistance(3000D);
-        planet.setRotationDirection(ClockDirection.CLOCKWISE);
+        planet.setRotationDirection(ClockDirection.COUNTERCLOCKWISE);
 
-        planetService.createPlanet(planet);
+        // Save Planet
+        planet = planetService.createPlanet(planet);
 
-        Assert.assertNotNull(planet.getId());
+
+        PlanetStatus planetStatus = new PlanetStatus();
+        planetStatus.setPlanet(planet);
+        planetStatus.setDate(new Date(2019, 7, 18));
+        planetStatus.setPositionX(1D);
+        planetStatus.setPositionY(0D);
+        planetStatus.setWeatherStatus(WeatherStatus.DROUGHT);
+
+
+        // Save PlanetStatus
+        planetStatusService.create(planetStatus);
+
+
+
+        // Rotate and Assert results
+        Point point = orbitCalculationService.getPlanetRotationPosition(planet,  90);
+
+        /*
+        If a Planet is in [1x, 0y] position and we rotate it 90°
+        the planet must end in [0x, 1y] position
+         */
+        Assert.assertEquals(0D, point.getX(), 0.1D);
+        Assert.assertEquals(-1D, point.getY(), 0.1D);
     }
 
 

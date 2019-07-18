@@ -3,9 +3,11 @@ package com.mercadolibre.orbit.domain.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name = "solar_systems")
+@Table(name = "solar_systems")
 public class SolarSystem {
 
     @Id
@@ -17,11 +19,14 @@ public class SolarSystem {
 
     @NotNull
     private Date creationDate;
-/*
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(nullable=false)
-    private Set<Planet> planets;
-*/
+
+    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JoinColumn(nullable=false)
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "solarSystem", orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    private List<Planet> planets;
+
     @NotNull
     private Double posX;
 
@@ -57,15 +62,15 @@ public class SolarSystem {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-/*
-    public Set<Planet> getPlanets() {
+
+    public List<Planet> getPlanets() {
         return planets;
     }
 
-    public void setPlanets(Set<Planet> planets) {
+    public void setPlanets(List<Planet> planets) {
         this.planets = planets;
     }
-*/
+
     public Double getPosX() {
         return posX;
     }

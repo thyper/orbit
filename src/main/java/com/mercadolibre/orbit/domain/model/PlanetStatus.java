@@ -1,11 +1,11 @@
 package com.mercadolibre.orbit.domain.model;
 
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+
+
 
 @Entity(name = "planets_status")
 @Table(name = "planets_status")

@@ -1,5 +1,6 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
+import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
@@ -178,12 +179,13 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         Point gravityCenter = new Point(solarSystem.getPosX(), solarSystem.getPosY());
 
-        // Rotate planet using Planet Status last position & Solar System gravity center
+        // Rotate Planet using Planet Status last position & Solar System gravity center
         PlanetStatus planetStatus = planetStatusService.getLastPlanetStatus(planet);
         Point startedPlanetPosition = new Point(planetStatus.getPositionX(), planetStatus.getPositionY());
 
         // Return new rotated Planet Position
-        return geometryService.rotate(startedPlanetPosition, gravityCenter, degrees);
+        return geometryService.rotate(startedPlanetPosition, gravityCenter,
+                planet.getRotationDirection().equals(ClockDirection.CLOCKWISE) ? degrees : degrees * (-1)); // If is COUNTERCLOCKWISE change sign
     }
 
 
