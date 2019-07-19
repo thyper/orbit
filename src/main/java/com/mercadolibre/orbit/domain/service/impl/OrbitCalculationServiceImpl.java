@@ -68,16 +68,12 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         // Get rotated Planets positions for Weather computation
         List<Planet> planets = planetService.getFromSolarSystem(solarSystem);
-        List<Point> planetsPositions = new ArrayList<>();
         List<PlanetStatus> planetStatuses = new ArrayList<>();
 
         for(Planet planet : planets) {
             try {
                 double degreesByDays = getPlanetRotationDegrees(planet, relativeDays);
                 Point point = getPlanetRotationPosition(planet, degreesByDays); // Temporary hard coded degrees
-
-                // Push points to calculate Weather
-                planetsPositions.add(point);
 
                 // Push Planets Status
                 PlanetStatus planetStatus = new PlanetStatus();
@@ -95,12 +91,6 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         if(planetStatuses.size() > 3)
             throw new AmountOfPlanetsStatusException("Calculate Perimeter", 3, planetStatuses.size());
 
-        // Compute perimeter
-        double perimeter = getPlanetsPerimeter(
-                planetStatuses.get(0),
-                planetStatuses.get(1),
-                planetStatuses.get(2)
-        );
 
         /*
         Weather conditions
@@ -121,12 +111,6 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
          */
         for(PlanetStatus ps : planetStatuses) {
             ps.setWeatherStatus(weather.getWeatherStatus());
-
-            // If has Storm calculate intensity using the perimeter value of Planets
-            if(weather.getWeatherStatus().equals(WeatherStatus.RAINFALL))
-                weather.setIntensity(perimeter);
-
-            // Persist in database
             planetStatusService.create(ps);
         }
 
@@ -193,6 +177,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 weather.setIntensity(perimeter);
             }else {
                 // If sun is outside Triangle
+                weather = null;
             }
         }
 
