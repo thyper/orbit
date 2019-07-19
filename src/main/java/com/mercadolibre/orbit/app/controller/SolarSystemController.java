@@ -2,8 +2,11 @@ package com.mercadolibre.orbit.app.controller;
 
 
 import com.mercadolibre.orbit.app.api.ApiError;
+import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
+import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,9 @@ public class SolarSystemController {
 
     @Autowired
     private SolarSystemService solarSystemService;
+
+
+    private SolarSystemMapper solarSystemMapper = Mappers.getMapper(SolarSystemMapper.class);
 
 
     @GetMapping("{id}")
@@ -34,8 +40,13 @@ public class SolarSystemController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody SolarSystem solarSystem) {
-        SolarSystem solarSystem1 = solarSystemService.createSolarSystem(solarSystem);
+    public ResponseEntity<?> create(@RequestBody PostSolarSystemRequest postSolarSystemRequest) {
+
+        if(solarSystemMapper == null)
+            return new ResponseEntity<>("NULL POINTER", HttpStatus.CONFLICT);
+
+        SolarSystem solarSystem1 = solarSystemService.createSolarSystem(
+                solarSystemMapper.postSolarSystemRequestToSolarSystem(postSolarSystemRequest));
 
         return new ResponseEntity<>(solarSystem1, HttpStatus.CREATED);
     }

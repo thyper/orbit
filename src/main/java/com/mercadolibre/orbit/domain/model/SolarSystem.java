@@ -1,12 +1,11 @@
 package com.mercadolibre.orbit.domain.model;
 
-import org.hibernate.annotations.CreationTimestamp;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "solar_systems")
 @Table(name = "solar_systems")
@@ -19,15 +18,13 @@ public class SolarSystem {
     @NotNull
     private String name;
 
-    @CreationTimestamp
     @NotNull
     private Date creationDate;
 
-    //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@JoinColumn(nullable=false)
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "solarSystem", orphanRemoval = true,
             fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Planet> planets;
 
     @NotNull
@@ -36,6 +33,11 @@ public class SolarSystem {
     @NotNull
     private Double posY;
 
+
+    @PrePersist
+    private void configureCreatedDate() {
+        this.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
+    }
 
     /**
      * Getters & Setters

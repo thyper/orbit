@@ -8,15 +8,13 @@ import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.sql.Date;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,7 +35,7 @@ public class OrbitApplicationTests {
 	    solarSystem.setName("Solar System Name");
 	    solarSystem.setPosX(0D);
 	    solarSystem.setPosY(0D);
-	    solarSystem.setCreationDate(new Date(2019, 7, 18));
+	    solarSystem.setCreationDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
 
 	    // Save Solar System
         solarSystem = solarSystemRepository.save(solarSystem);
