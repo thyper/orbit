@@ -10,6 +10,7 @@ public interface SolarSystemService {
 
     SolarSystem createSolarSystem(SolarSystem solarSystem);
     SolarSystem findById(Long id);
+    void deleteById(Long id);
 
     int countPlanets(SolarSystem solarSystem) throws SolarSystemNotFound;
 

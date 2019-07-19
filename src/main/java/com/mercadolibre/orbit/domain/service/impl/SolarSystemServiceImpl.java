@@ -38,6 +38,11 @@ public class SolarSystemServiceImpl implements SolarSystemService {
     }
 
     @Override
+    public void deleteById(Long id) {
+        solarSystemRepository.deleteById(id);
+    }
+
+    @Override
     public int countPlanets(SolarSystem solarSystem) throws SolarSystemNotFound {
         return planetService.countPlanetsBySolarSystem(solarSystem.getId());
     }

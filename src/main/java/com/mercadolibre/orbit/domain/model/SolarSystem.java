@@ -1,5 +1,7 @@
 package com.mercadolibre.orbit.domain.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
@@ -17,6 +19,7 @@ public class SolarSystem {
     @NotNull
     private String name;
 
+    @CreationTimestamp
     @NotNull
     private Date creationDate;
 

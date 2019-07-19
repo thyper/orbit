@@ -32,7 +32,7 @@ public class OrbitApplicationTests {
 
 
 	@Test
-	public void contextLoads() {
+	public void entityCreationAndRelationShip() {
 	    SolarSystem solarSystem = new SolarSystem();
 	    solarSystem.setName("Solar System Name");
 	    solarSystem.setPosX(0D);
@@ -62,7 +62,7 @@ public class OrbitApplicationTests {
 
         SolarSystem ss = solarSystemRepository.findById(solarSystem.getId()).orElse(null);
         System.out.println(String.format("PLANETS: %s", ss.getPlanets().size()));
-
+        System.out.println(String.format("SolarSystem creation Date: %s", solarSystem.getCreationDate().toString()));
 	}
 
 }

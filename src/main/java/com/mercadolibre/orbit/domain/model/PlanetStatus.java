@@ -1,6 +1,8 @@
 package com.mercadolibre.orbit.domain.model;
 
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -15,6 +17,7 @@ public class PlanetStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreationTimestamp
     @NotNull
     private Date date;
 
