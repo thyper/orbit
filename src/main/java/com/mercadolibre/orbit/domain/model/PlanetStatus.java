@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -34,6 +35,13 @@ public class PlanetStatus {
     private WeatherStatus weatherStatus;
 
     private Double weatherIntensity;
+
+
+    @PrePersist
+    private void configureCreatedDate() {
+        this.setDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+    }
+
 
 
     /**
