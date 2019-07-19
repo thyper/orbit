@@ -14,7 +14,7 @@ public interface OrbitCalculationService {
 
     void spinSolarSystem(SolarSystem solarSystem, int relativeDays) throws InsufficientPlanetsException, SolarSystemNotFound, AmountOfPlanetsStatusException;
 
-    Weather getWeatherCondition(List<Point> planetsPositions) throws InsufficientPlanetsPositionException;
+    Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException;
 
     Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException;
     double getPlanetsPerimeter(PlanetStatus p1, PlanetStatus p2, PlanetStatus p3);

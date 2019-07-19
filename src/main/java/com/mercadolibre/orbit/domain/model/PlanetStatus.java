@@ -28,7 +28,6 @@ public class PlanetStatus {
     private Double positionY;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private WeatherStatus weatherStatus;
 
     private Double weatherIntensity;

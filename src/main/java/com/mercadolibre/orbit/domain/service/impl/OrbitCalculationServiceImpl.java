@@ -107,7 +107,10 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
          */
         Weather weather = null;
         try {
-            weather = getWeatherCondition(planetsPositions);
+            weather = getWeatherCondition(
+                    new Point(solarSystem.getPosX(), solarSystem.getPosY()),
+                    planetStatuses
+            );
         } catch (InsufficientPlanetsPositionException e) {
             throw new OrbitCalculationServiceRuntimeException("Insufficient Planets positions for Weather calculation");
         }
@@ -136,19 +139,62 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     /**
      * Calculate Weather conditions for Solar System
      *
-     * @param planetsPositions
-     * @return
+     * @param gravityCenter
+     * @param planetStatuses
+     * @return Weather
      * @throws InsufficientPlanetsException
      */
     @Override
-    public Weather getWeatherCondition(List<Point> planetsPositions) throws InsufficientPlanetsPositionException {
+    public Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException {
 
         // Check planets necessary for status computation
-        if(planetsPositions.size() == planetsBySolarSystem)
-            throw new InsufficientPlanetsPositionException(planetsBySolarSystem, planetsPositions.size());
+        if(planetStatuses.size() == planetsBySolarSystem)
+            throw new InsufficientPlanetsPositionException(planetsBySolarSystem, planetStatuses.size());
 
         // Calculate Weather
         Weather weather = new Weather();
+
+
+        // Create Points positions of Planets
+        List<Point> planetsPositions = new ArrayList<>();
+        planetsPositions.add(new Point(planetStatuses.get(0).getPositionX(), planetStatuses.get(0).getPositionY()));
+        planetsPositions.add(new Point(planetStatuses.get(1).getPositionX(), planetStatuses.get(1).getPositionY()));
+        planetsPositions.add(new Point(planetStatuses.get(2).getPositionX(), planetStatuses.get(2).getPositionY()));
+
+        boolean planetsAligned = areAligned(planetsPositions);
+        if(areAligned(planetsPositions)) {
+            // Add sun
+            planetsPositions.add(gravityCenter);
+
+            // Check alignment with gravity center
+            if(areAligned(planetsPositions)) {
+                // Alignment with sun
+                weather.setWeatherStatus(WeatherStatus.DROUGHT);
+            }else {
+                // Alignment without sun
+                weather.setWeatherStatus(WeatherStatus.OPTIMAL);
+            }
+        }else {
+            // Create planets Triangle
+            Triangle planetsTriangle = new Triangle(
+                    planetsPositions.get(0),
+                    planetsPositions.get(1),
+                    planetsPositions.get(2)
+            );
+
+            // Call GeometryService to check if gravity center is inside Triangle
+            if(geometryService.detectCollision(planetsTriangle, gravityCenter)) {
+                // If sun is inside Triangle
+                double perimeter = getPlanetsPerimeter(planetStatuses.get(0),
+                        planetStatuses.get(1),
+                        planetStatuses.get(2));
+
+                weather.setWeatherStatus(WeatherStatus.RAINFALL);
+                weather.setIntensity(perimeter);
+            }else {
+                // If sun is outside Triangle
+            }
+        }
 
 
         return weather;
