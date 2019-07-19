@@ -1,7 +1,7 @@
 package com.mercadolibre.orbit.app.controller;
 
 
-import com.mercadolibre.orbit.app.api.ApiError;
+import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
@@ -51,7 +51,7 @@ public class SolarSystemController {
         return new ResponseEntity<>(solarSystem1, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("id")
+    @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         solarSystemService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);

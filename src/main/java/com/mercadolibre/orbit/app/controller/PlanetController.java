@@ -1,6 +1,6 @@
 package com.mercadolibre.orbit.app.controller;
 
-import com.mercadolibre.orbit.app.api.ApiError;
+import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.PlanetMapper;
 import com.mercadolibre.orbit.app.api.request.PostPlanetRequest;
 import com.mercadolibre.orbit.domain.model.Planet;

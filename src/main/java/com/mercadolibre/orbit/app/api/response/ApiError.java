@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.app.api;
+package com.mercadolibre.orbit.app.api.response;
 
 import org.springframework.http.HttpStatus;
 
