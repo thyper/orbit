@@ -22,11 +22,11 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
 
     @Override
     public OrbitCalculationJob getLast(JobStatus jobStatus) {
-        return orbitCalculationJobRepository.getLast(jobStatus.toString());
+        return orbitCalculationJobRepository.getLast(jobStatus);
     }
 
     @Override
-    public OrbitCalculationJob create(OrbitCalculationJob orbitCalculationJob) {
+    public OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob) {
         return orbitCalculationJobRepository.save(orbitCalculationJob);
     }
 

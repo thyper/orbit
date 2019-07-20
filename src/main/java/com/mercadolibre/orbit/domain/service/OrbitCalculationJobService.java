@@ -10,7 +10,7 @@ public interface OrbitCalculationJobService {
 
     OrbitCalculationJob get(Long id);
     OrbitCalculationJob getLast(JobStatus jobStatus);
-    OrbitCalculationJob create(OrbitCalculationJob orbitCalculationJob);
+    OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob);
     OrbitCalculationJob create();
     JobStatus sumJobStatus(JobStatus actualJobStatus, JobStatus newJobStatus);
 

@@ -105,6 +105,10 @@ public class SolarSystemController {
         try {
             job = orbitCalculationJobRunner.calculateOrbitStatus();
         } catch (OrbitCalculationJobRunnerException e) {
+            ApiError apiError = new ApiError(HttpStatus.CONFLICT,
+                    "Error en la creacion del Job",
+                    e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 
         return new ResponseEntity<>(job, HttpStatus.ACCEPTED);

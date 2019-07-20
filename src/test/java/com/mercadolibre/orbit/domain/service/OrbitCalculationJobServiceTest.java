@@ -25,9 +25,7 @@ public class OrbitCalculationJobServiceTest extends GenericTest {
 
     @Test
     public void testJobSucceedCreation() {
-        OrbitCalculationJob job = new OrbitCalculationJob();
-        job.setJobStatus(JobStatus.CREATED);
-        job = orbitCalculationJobService.create(job);
+        OrbitCalculationJob job = orbitCalculationJobService.create();
 
         Assert.assertNotNull(job);
 

@@ -58,7 +58,8 @@ public class OrbitCalculationJobRunner {
         int daysNotChecked = 0;
 
         if(ljob != null) {
-            daysNotChecked = getDaysDifference(new Date(), ljob.getCreationDate());
+            Date today = new Date();
+            daysNotChecked = getDaysDifference(dateToLocalDate(today), ljob.getCreationDate().toLocalDate());
 
             if(daysNotChecked <= 0) {
                 throw new OrbitCalculationJobRunnerException(String.format(
@@ -96,6 +97,9 @@ public class OrbitCalculationJobRunner {
         List<SolarSystem> solarSystems = solarSystemService.getAll();
 
         // Spin every Solar Systems
+        if(solarSystems.size() <= 0)
+            job.setJobStatus(JobStatus.SUCCESS);
+        else
         for(SolarSystem solarSystem : solarSystems) {
             try {
                 orbitCalculationService.spinSolarSystem(solarSystem, daysNotChecked);   // Transactional
@@ -108,6 +112,9 @@ public class OrbitCalculationJobRunner {
                 job.setJobStatus(orbitCalculationJobService.sumJobStatus(job.getJobStatus(), JobStatus.FAILED));
             }
         }
+
+        // Save Job
+        orbitCalculationJobService.save(job);
     }
 
 
@@ -120,8 +127,8 @@ public class OrbitCalculationJobRunner {
     Private Declarations for local use
      */
 
-    private int getDaysDifference(Date di, Date df) {
-        return Math.round(DAYS.between(dateToLocalDate(di), dateToLocalDate(df)));
+    private int getDaysDifference(LocalDate di, LocalDate df) {
+        return Math.round(DAYS.between(di, df));
     }
 
     private LocalDate dateToLocalDate(Date date) {

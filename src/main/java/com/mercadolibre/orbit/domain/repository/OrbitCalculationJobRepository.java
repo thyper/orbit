@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrbitCalculationJobRepository extends JpaRepository<OrbitCalculationJob, Long> {
 
-    @Query("SELECT ocj FROM orbitcalculationjobs ocj WHERE jobstatus = :jobstatus ORDER BY ocj.id DESC")
-    OrbitCalculationJob getLast(@Param("jobstatus") String jobStatus);
+    @Query("SELECT ocj FROM orbitcalculationjobs ocj WHERE ocj.jobStatus = :jobstatus ORDER BY ocj.id DESC")
+    OrbitCalculationJob getLast(@Param("jobstatus") JobStatus jobStatus);
 
 }
