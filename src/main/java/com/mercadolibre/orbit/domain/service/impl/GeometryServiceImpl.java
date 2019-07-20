@@ -51,20 +51,17 @@ public class GeometryServiceImpl implements GeometryService {
 
     @Override
     public double getVectorMagnitude(Point p1, Point p2) {
-
-        // Vectors sum
-        Point psum = new Point();
-        psum.setX(p1.getX() + p2.getX());
-        psum.setY(p1.getY() + p2.getY());
-
-        // Vector Magnitude
         int exponent = 2;
-        return Math.sqrt(Math.pow(psum.getX(), exponent) + Math.pow(psum.getY(), exponent));
+        return Math.sqrt(
+                Math.pow(p1.getX() - p2.getX(), exponent) +
+                Math.pow(p1.getY() - p2.getY(), exponent)
+        );
     }
 
     @Override
     public boolean areCollinear(Point p1, Point p2, Point p3) {
-        return (p1.getY() - p2.getY()) * (p1.getX() - p3.getX()) == (p1.getY() - p3.getY()) * (p1.getX() - p2.getX());
+        return (p1.getY() - p2.getY()) * (p1.getX() - p3.getX()) ==
+                (p1.getY() - p3.getY()) * (p1.getX() - p2.getX());
     }
 
     @Override

@@ -1,49 +1,35 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.app.api.request;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
-@Entity(name = "planets")
-@Table(name = "planets")
-public class Planet {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
 
-    @NotNull
+
+public class PostPlanetRequest {
+
+    @JsonProperty("name")
     private String name;
 
-    @ManyToOne
-    private SolarSystem solarSystem;
+    @JsonProperty("solar_system_id")
+    private Long solarSystemId;
 
-    @NotNull
+    @JsonProperty("sun_distance")
     private Double sunDistance;
 
-    @NotNull
+    @JsonProperty("degrees_per_day")
     private Double degreesPerDay;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
+    @JsonProperty("rotation_direction")
     private ClockDirection rotationDirection;
 
 
 
-    /**
-     * Getters & Setters
+
+
+    /*
+    Getters & Setters
      */
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -51,6 +37,14 @@ public class Planet {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getSolarSystemId() {
+        return solarSystemId;
+    }
+
+    public void setSolarSystemId(Long solarSystemId) {
+        this.solarSystemId = solarSystemId;
     }
 
     public Double getSunDistance() {
@@ -75,13 +69,5 @@ public class Planet {
 
     public void setRotationDirection(ClockDirection rotationDirection) {
         this.rotationDirection = rotationDirection;
-    }
-
-    public SolarSystem getSolarSystem() {
-        return solarSystem;
-    }
-
-    public void setSolarSystem(SolarSystem solarSystem) {
-        this.solarSystem = solarSystem;
     }
 }
