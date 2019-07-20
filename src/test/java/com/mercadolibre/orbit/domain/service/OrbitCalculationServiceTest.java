@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.Weather;
 import com.mercadolibre.orbit.domain.model.geometry.Point;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
@@ -37,6 +38,26 @@ public class OrbitCalculationServiceTest  extends GenericTest {
 
 
 
+    @Test
+    public void testPlanetWeatherConditions() throws InsufficientPlanetsPositionException {
+        // Set Sun position
+        Point gravityCenter = new Point(0D, 0D);
+        List<PlanetStatus> rainfallPlanetStatuses = createPlanetStatusesForRainFallWeatherStatus();
+        List<PlanetStatus> droughPlanetStatuses = createPlanetStatusesForDroughWeatherStatus();
+        List<PlanetStatus> optimalPlanetStatuses = createPlanetStatusesForOptimalWeatherStatus();
+
+
+
+        // Test Weather
+        Weather rainfallWeather = orbitCalculationService.getWeatherCondition(gravityCenter, rainfallPlanetStatuses);
+        Weather droughWeather = orbitCalculationService.getWeatherCondition(gravityCenter, droughPlanetStatuses);
+        Weather optimalhWeather = orbitCalculationService.getWeatherCondition(gravityCenter, optimalPlanetStatuses);
+
+        // Tests
+        Assert.assertEquals(rainfallWeather.getWeatherStatus(), WeatherStatus.RAINFALL);
+        Assert.assertEquals(droughWeather.getWeatherStatus(), WeatherStatus.DROUGHT);
+        Assert.assertEquals(optimalhWeather.getWeatherStatus(), WeatherStatus.OPTIMAL);
+    }
 
 
 
@@ -163,6 +184,78 @@ public class OrbitCalculationServiceTest  extends GenericTest {
     }
 
 
+
+
+
+
+    private List<PlanetStatus> createPlanetStatusesForRainFallWeatherStatus() {
+        // Create PlanetStatus
+        PlanetStatus ps1 = new PlanetStatus();
+        ps1.setPositionX(1D);
+        ps1.setPositionY(-1D);
+
+        PlanetStatus ps2 = new PlanetStatus();
+        ps2.setPositionX(-1D);
+        ps2.setPositionY(-1D);
+
+        PlanetStatus ps3 = new PlanetStatus();
+        ps3.setPositionX(0D);
+        ps3.setPositionY(1D);
+
+        // Push Planet Statuses in array
+        List<PlanetStatus> planetStatuses = new ArrayList<>();
+        planetStatuses.add(ps1);
+        planetStatuses.add(ps2);
+        planetStatuses.add(ps3);
+
+        return planetStatuses;
+    }
+
+    private List<PlanetStatus> createPlanetStatusesForDroughWeatherStatus() {
+        // Create PlanetStatus
+        PlanetStatus ps1 = new PlanetStatus();
+        ps1.setPositionX(1D);
+        ps1.setPositionY(0D);
+
+        PlanetStatus ps2 = new PlanetStatus();
+        ps2.setPositionX(2D);
+        ps2.setPositionY(0D);
+
+        PlanetStatus ps3 = new PlanetStatus();
+        ps3.setPositionX(3D);
+        ps3.setPositionY(0D);
+
+        // Push Planet Statuses in array
+        List<PlanetStatus> planetStatuses = new ArrayList<>();
+        planetStatuses.add(ps1);
+        planetStatuses.add(ps2);
+        planetStatuses.add(ps3);
+
+        return planetStatuses;
+    }
+
+    private List<PlanetStatus> createPlanetStatusesForOptimalWeatherStatus() {
+        // Create PlanetStatus
+        PlanetStatus ps1 = new PlanetStatus();
+        ps1.setPositionX(1D);
+        ps1.setPositionY(1D);
+
+        PlanetStatus ps2 = new PlanetStatus();
+        ps2.setPositionX(2D);
+        ps2.setPositionY(1D);
+
+        PlanetStatus ps3 = new PlanetStatus();
+        ps3.setPositionX(3D);
+        ps3.setPositionY(1D);
+
+        // Push Planet Statuses in array
+        List<PlanetStatus> planetStatuses = new ArrayList<>();
+        planetStatuses.add(ps1);
+        planetStatuses.add(ps2);
+        planetStatuses.add(ps3);
+
+        return planetStatuses;
+    }
 
 
 }

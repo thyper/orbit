@@ -132,7 +132,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     public Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException {
 
         // Check planets necessary for status computation
-        if(planetStatuses.size() == planetsBySolarSystem)
+        if(planetStatuses.size() != planetsBySolarSystem)
             throw new InsufficientPlanetsPositionException(planetsBySolarSystem, planetStatuses.size());
 
         // Calculate Weather
