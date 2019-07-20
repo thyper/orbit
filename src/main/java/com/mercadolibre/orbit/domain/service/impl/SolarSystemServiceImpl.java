@@ -47,4 +47,9 @@ public class SolarSystemServiceImpl implements SolarSystemService {
         return planetService.countPlanetsBySolarSystem(solarSystem.getId());
     }
 
+    @Override
+    public List<SolarSystem> getAll() {
+        return solarSystemRepository.findAll();
+    }
+
 }

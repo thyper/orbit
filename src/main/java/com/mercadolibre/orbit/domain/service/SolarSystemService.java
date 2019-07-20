@@ -14,4 +14,6 @@ public interface SolarSystemService {
 
     int countPlanets(SolarSystem solarSystem) throws SolarSystemNotFound;
 
+    List<SolarSystem> getAll();
+
 }

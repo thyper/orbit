@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
+import com.mercadolibre.orbit.app.job.exception.OrbitCalculationJobRunnerException;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
@@ -100,7 +101,12 @@ public class SolarSystemController {
      */
     @PostMapping("job")
     public ResponseEntity<?> runJob() {
-        OrbitCalculationJob job = orbitCalculationJobRunner.calculateOrbitStatus();
+        OrbitCalculationJob job = null;
+        try {
+            job = orbitCalculationJobRunner.calculateOrbitStatus();
+        } catch (OrbitCalculationJobRunnerException e) {
+        }
+
         return new ResponseEntity<>(job, HttpStatus.ACCEPTED);
     }
 
