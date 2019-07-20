@@ -51,7 +51,7 @@ public class OrbitCalculationJobRunner {
     public OrbitCalculationJob calculateOrbitStatus() throws OrbitCalculationJobRunnerException {
 
         // Get last SUCCESS Job
-        OrbitCalculationJob ljob = orbitCalculationJobService.getLast(JobStatus.SUCCESS);
+        OrbitCalculationJob ljob = orbitCalculationJobService.getLast(JobStatus.CREATED);
 
         // Check if there are days still not calculated between last SUCCESS Job Date and today
         // and if there is no Job still running (CREATED)
@@ -61,13 +61,16 @@ public class OrbitCalculationJobRunner {
             Date today = new Date();
             daysNotChecked = getDaysDifference(dateToLocalDate(today), ljob.getCreationDate().toLocalDate());
 
+            /*
             if(daysNotChecked <= 0) {
                 throw new OrbitCalculationJobRunnerException(String.format(
                         "Orbit already updated by last Job (%s)",
                         ljob.getId()
                 ));
             }
+            */
 
+            // Check if is still a Job running (CREATED)
             if(ljob.getJobStatus().equals(JobStatus.CREATED)) {
                 throw new OrbitCalculationJobRunnerException(String.format(
                         "Still a Job (%s) executing since: %s",
