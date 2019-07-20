@@ -43,6 +43,11 @@ public class SolarSystemServiceImpl implements SolarSystemService {
     }
 
     @Override
+    public SolarSystem save(SolarSystem solarSystem) {
+        return solarSystemRepository.save(solarSystem);
+    }
+
+    @Override
     public int countPlanets(SolarSystem solarSystem) throws SolarSystemNotFound {
         return planetService.countPlanetsBySolarSystem(solarSystem.getId());
     }

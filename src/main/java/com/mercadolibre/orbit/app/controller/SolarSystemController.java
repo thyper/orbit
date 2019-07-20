@@ -5,7 +5,6 @@ import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
-import com.mercadolibre.orbit.app.job.exception.OrbitCalculationJobRunnerException;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.xml.ws.Response;
 
 
 @RestController
@@ -101,16 +98,13 @@ public class SolarSystemController {
      */
     @PostMapping("job")
     public ResponseEntity<?> runJob() {
-        OrbitCalculationJob job = null;
-        try {
-            job = orbitCalculationJobRunner.calculateOrbitStatus();
-        } catch (OrbitCalculationJobRunnerException e) {
-            ApiError apiError = new ApiError(HttpStatus.CONFLICT,
-                    "Error en la creacion del Job",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        // Creates the Job
+        OrbitCalculationJob job = orbitCalculationJobService.create();
 
+        // Async Task
+        orbitCalculationJobRunner.asyncTaskCalculateOrbitStatus(job);
+
+        // Return Job while task still running for later Job status consult
         return new ResponseEntity<>(job, HttpStatus.ACCEPTED);
     }
 

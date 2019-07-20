@@ -6,7 +6,12 @@ import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.repository.OrbitCalculationJobRepository;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -22,7 +27,11 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
 
     @Override
     public OrbitCalculationJob getLast(JobStatus jobStatus) {
-        return orbitCalculationJobRepository.getLast(jobStatus);
+        List<OrbitCalculationJob> orbitCalculationJobList = orbitCalculationJobRepository.getLast(jobStatus, PageRequest.of(0, 1));
+
+        if(orbitCalculationJobList.size() > 0)
+            return orbitCalculationJobList.get(0);
+        else return null;
     }
 
     @Override
@@ -39,23 +48,9 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
     }
 
 
-
     @Override
-    public JobStatus sumJobStatus(JobStatus actualJobStatus, JobStatus newJobStatus) {
-
-        if(actualJobStatus.equals(JobStatus.CREATED) && !newJobStatus.equals(JobStatus.FAILED))
-            return newJobStatus;
-
-        if(actualJobStatus.equals(JobStatus.SUCCESS) && newJobStatus.equals(JobStatus.FAILED))
-            return JobStatus.PARTIAL_SUCCESS;
-
-        if(actualJobStatus.equals(JobStatus.FAILED) && !newJobStatus.equals(JobStatus.CREATED))
-            return JobStatus.PARTIAL_SUCCESS;
-
-        if(actualJobStatus.equals(JobStatus.PARTIAL_SUCCESS))
-            return JobStatus.PARTIAL_SUCCESS;
-
-        return newJobStatus;
+    public int countJobsByStatus(JobStatus jobStatus) {
+        return orbitCalculationJobRepository.countByStatus(jobStatus);
     }
 
 }

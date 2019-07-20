@@ -37,10 +37,7 @@ public class PlanetStatus {
     private Double weatherIntensity;
 
 
-    @PrePersist
-    private void configureCreatedDate() {
-        this.setDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-    }
+
 
 
 

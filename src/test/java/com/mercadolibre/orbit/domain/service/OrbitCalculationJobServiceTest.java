@@ -2,7 +2,6 @@ package com.mercadolibre.orbit.domain.service;
 
 
 import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
-import com.mercadolibre.orbit.app.job.exception.OrbitCalculationJobRunnerException;
 import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import org.junit.Test;
@@ -18,8 +17,9 @@ public class OrbitCalculationJobServiceTest extends GenericTest {
     private OrbitCalculationJobRunner orbitCalculationJobRunner;
 
     @Test
-    public void testJobCreation() throws OrbitCalculationJobRunnerException {
-        OrbitCalculationJob job = orbitCalculationJobRunner.calculateOrbitStatus();
+    public void testJobCreation() {
+        OrbitCalculationJob job = orbitCalculationJobService.create();
+        orbitCalculationJobRunner.asyncTaskCalculateOrbitStatus(job);
         Assert.assertNotNull(job);
     }
 

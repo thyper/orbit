@@ -1,9 +1,11 @@
 package com.mercadolibre.orbit.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
@@ -33,10 +35,19 @@ public class SolarSystem {
     @NotNull
     private Double posY;
 
+    private Date lastDateRotated;
+
+    private Date rotatedToDate;
+
+    @Enumerated(EnumType.STRING)
+    private SolarSystemStatus status;
+
+
 
     @PrePersist
     private void configureCreatedDate() {
-        this.setCreationDate(new Date(Calendar.getInstance().getTimeInMillis()));
+        Date today = new Date(Calendar.getInstance().getTimeInMillis());
+        this.setCreationDate(today);
     }
 
     /**
@@ -90,5 +101,29 @@ public class SolarSystem {
 
     public void setPosY(Double posY) {
         this.posY = posY;
+    }
+
+    public Date getLastDateRotated() {
+        return lastDateRotated;
+    }
+
+    public void setLastDateRotated(Date lastDateRotated) {
+        this.lastDateRotated = lastDateRotated;
+    }
+
+    public Date getRotatedToDate() {
+        return rotatedToDate;
+    }
+
+    public void setRotatedToDate(Date rotatedToDate) {
+        this.rotatedToDate = rotatedToDate;
+    }
+
+    public SolarSystemStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SolarSystemStatus status) {
+        this.status = status;
     }
 }

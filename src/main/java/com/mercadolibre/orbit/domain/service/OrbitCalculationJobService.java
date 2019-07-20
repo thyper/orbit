@@ -12,6 +12,6 @@ public interface OrbitCalculationJobService {
     OrbitCalculationJob getLast(JobStatus jobStatus);
     OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob);
     OrbitCalculationJob create();
-    JobStatus sumJobStatus(JobStatus actualJobStatus, JobStatus newJobStatus);
+    int countJobsByStatus(JobStatus jobStatus);
 
 }

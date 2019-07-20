@@ -1,7 +1,8 @@
 package com.mercadolibre.orbit.app.job;
 
-import com.mercadolibre.orbit.app.job.exception.OrbitCalculationJobRunnerException;
+import com.mercadolibre.orbit.app.job.exception.JobStillRunningRuntimeException;
 import com.mercadolibre.orbit.domain.enums.JobStatus;
+import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
@@ -13,7 +14,6 @@ import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsExcept
 import com.mercadolibre.orbit.domain.service.exception.SolarSystemNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -43,82 +43,45 @@ public class OrbitCalculationJobRunner {
 
     /**
      * This Scheduled trigger run by cron
-     * Creates the async Job and return it
+     * Calls services that spin the Solar System & calculate new Weather of Planets
      *
      * @return
      */
-    @Scheduled(cron = "0 0 12 * * *")
-    public OrbitCalculationJob calculateOrbitStatus() throws OrbitCalculationJobRunnerException {
+    //@Scheduled(cron = "0 0 12 * * *")
+    @Async("processExecutor")
+    public void asyncTaskCalculateOrbitStatus(OrbitCalculationJob job) throws JobStillRunningRuntimeException {
 
-        // Get last SUCCESS Job
-        OrbitCalculationJob ljob = orbitCalculationJobService.getLast(JobStatus.CREATED);
+        // Check if there is no Job still running (JobStatus.CREATED)
+        OrbitCalculationJob lJobRunning = orbitCalculationJobService.getLast(JobStatus.ONGOING);
+        if(lJobRunning != null) {
+            // Kill Job and save it
+            job.setJobStatus(JobStatus.TERMINATED);
+            orbitCalculationJobService.save(job);
 
-        // Check if there are days still not calculated between last SUCCESS Job Date and today
-        // and if there is no Job still running (CREATED)
-        int daysNotChecked = 0;
-
-        if(ljob != null) {
-            Date today = new Date();
-            daysNotChecked = getDaysDifference(dateToLocalDate(today), ljob.getCreationDate().toLocalDate());
-
-            /*
-            if(daysNotChecked <= 0) {
-                throw new OrbitCalculationJobRunnerException(String.format(
-                        "Orbit already updated by last Job (%s)",
-                        ljob.getId()
-                ));
-            }
-            */
-
-            // Check if is still a Job running (CREATED)
-            if(ljob.getJobStatus().equals(JobStatus.CREATED)) {
-                throw new OrbitCalculationJobRunnerException(String.format(
-                        "Still a Job (%s) executing since: %s",
-                        ljob.getId(),
-                        ljob.getCreationDate().toString()
-                ));
-            }
+            throw new JobStillRunningRuntimeException(String.format(
+                    "Can't proceed with Job because there is still a Job '%s' running since %s",
+                    lJobRunning.getId(),
+                    lJobRunning.getCreationDate().toString()
+            ));
         }
 
-        // Creates new Job & persist it
-        OrbitCalculationJob job = orbitCalculationJobService.create();
-        calculateOrbitStatus(job, daysNotChecked);  // Async Task
+        // Set Job as ONGOING status
+        job.setJobStatus(JobStatus.ONGOING);
+        orbitCalculationJobService.save(job);
 
-        return job;
-    }
+        // Spin Solar Systems to a specific Date
+        final Date today = new Date();
+        SpiningStatus spiningStatus = orbitCalculationService.spinSolarSystems(today);
 
-
-    /**
-     * Calls services that spin the Solar System & calculate new Weather of Planets
-     *
-     * @param job
-     * @param daysNotChecked
-     */
-    @Async
-    private void calculateOrbitStatus(OrbitCalculationJob job, int daysNotChecked) {
-        // Get all Solar Systems to spin
-        List<SolarSystem> solarSystems = solarSystemService.getAll();
-
-        // Spin every Solar Systems
-        if(solarSystems.size() <= 0)
+        if(spiningStatus.equals(SpiningStatus.OK))
             job.setJobStatus(JobStatus.SUCCESS);
         else
-        for(SolarSystem solarSystem : solarSystems) {
-            try {
-                orbitCalculationService.spinSolarSystem(solarSystem, daysNotChecked);   // Transactional
-                job.setJobStatus(orbitCalculationJobService.sumJobStatus(job.getJobStatus(), JobStatus.SUCCESS));
-            } catch (InsufficientPlanetsException e) {
-                job.setJobStatus(orbitCalculationJobService.sumJobStatus(job.getJobStatus(), JobStatus.FAILED));
-            } catch (SolarSystemNotFound solarSystemNotFound) {
-                job.setJobStatus(orbitCalculationJobService.sumJobStatus(job.getJobStatus(), JobStatus.FAILED));
-            } catch (AmountOfPlanetsStatusException e) {
-                job.setJobStatus(orbitCalculationJobService.sumJobStatus(job.getJobStatus(), JobStatus.FAILED));
-            }
-        }
+            job.setJobStatus(JobStatus.FAILED);
 
         // Save Job
         orbitCalculationJobService.save(job);
     }
+
 
 
 

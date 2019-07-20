@@ -1,6 +1,7 @@
 package com.mercadolibre.orbit.domain.service;
 
 
+import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
@@ -8,11 +9,12 @@ import com.mercadolibre.orbit.domain.model.Weather;
 import com.mercadolibre.orbit.domain.model.geometry.Point;
 import com.mercadolibre.orbit.domain.service.exception.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrbitCalculationService {
 
-    void spinSolarSystem(SolarSystem solarSystem, int relativeDays) throws InsufficientPlanetsException, SolarSystemNotFound, AmountOfPlanetsStatusException;
+    SpiningStatus spinSolarSystems(Date toDate);
 
     Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException;
 

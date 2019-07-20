@@ -1,6 +1,8 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
+import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
+import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
@@ -16,16 +18,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 
 
 @Service
 public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
-    @Value("${solarsystem.planets_by_solar_system}")
-    private int planetsBySolarSystem;
+    private final int planetsBySolarSystem = 3;
 
 
     // Services
@@ -42,6 +49,58 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     private GeometryService geometryService;
 
 
+    /**
+     * Procedure that Spin every Solar System that wasn't updated till 'toDate'
+     *
+     * @param toDate
+     */
+    @Override
+    public SpiningStatus spinSolarSystems(Date toDate) {
+
+        List<SolarSystem> solarSystems = solarSystemService.getAll();
+
+        int solarSystemsRotatedSuccessfully = 0;
+
+        for(SolarSystem ss : solarSystems) {
+            // Get last Date when SolarSystem was updated
+            Date ssRotatedToDate = ss.getRotatedToDate();
+            int daysWithoutBeenRotated = getDaysDifference(dateToLocalDate(ssRotatedToDate), dateToLocalDate(toDate));
+
+            // If SolarSystem is updated continue
+            if(daysWithoutBeenRotated <= 0)
+                continue;
+
+            // Rotate all the days between
+            int daysRotatedSuccessFully = 0;
+            for(int i = 0; i < daysWithoutBeenRotated; i++) {
+                try {
+                    spinSolarSystemOneDay(ss);
+                    daysRotatedSuccessFully++;
+                    ss.setRotatedToDate(sumDays(ssRotatedToDate, 1));
+
+                    if(!ss.getStatus().equals(SolarSystemStatus.NEEDS_REVISION))
+                        ss.setStatus(SolarSystemStatus.OK);
+
+                    solarSystemService.save(ss);
+                } catch (InsufficientPlanetsException | AmountOfPlanetsStatusException e) {
+                    ss.setStatus(SolarSystemStatus.NEEDS_REVISION);
+                    solarSystemService.save(ss);
+
+                    e.printStackTrace();
+                } catch (SolarSystemNotFound solarSystemNotFound) {
+                    solarSystemNotFound.printStackTrace();
+                }
+            }
+
+            if(daysRotatedSuccessFully == daysWithoutBeenRotated)
+                solarSystemsRotatedSuccessfully++;
+        }
+
+        if(solarSystemsRotatedSuccessfully < solarSystems.size())
+            return SpiningStatus.REVISION;
+        else
+            return SpiningStatus.OK;
+    }
 
 
 
@@ -49,20 +108,18 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
      * Spin all Solar System planets
      * Calculate orbit & weather conditions; and persist new Status
      *
-     * The time are in relative days (days * degrees_per_day) since actual persisted position
-     * Is NOT computed with the absolute time since the creation of the Solar System
+     * Takes actual Planet positions and Rotate ONLY ONE day since last persisted position
+     * Is NOT computed with the absolute time since the creation of the Solar System !!
      *
-     * INVASIVE procedure
      *
      * @param solarSystem
-     * @param relativeDays
      */
-    @Override
     @Transactional
-    public void spinSolarSystem(SolarSystem solarSystem, int relativeDays) throws InsufficientPlanetsException, SolarSystemNotFound, AmountOfPlanetsStatusException {
+    private void spinSolarSystemOneDay(SolarSystem solarSystem) throws InsufficientPlanetsException, SolarSystemNotFound, AmountOfPlanetsStatusException {
         /*
         Planets rotation
          */
+        int solarSystemRelativeDays = 1;
 
         // Check planets necessary for status computation
        if(solarSystemService.countPlanets(solarSystem) != planetsBySolarSystem)
@@ -74,7 +131,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         for(Planet planet : planets) {
             try {
-                double degreesByDays = getPlanetRotationDegrees(planet, relativeDays);
+                double degreesByDays = getPlanetRotationDegrees(planet, solarSystemRelativeDays);
                 Point point = getPlanetRotationPosition(planet, degreesByDays); // Temporary hard coded degrees
 
                 // Push Planets Status
@@ -82,6 +139,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 planetStatus.setPlanet(planet);
                 planetStatus.setPositionX(point.getX());
                 planetStatus.setPositionY(point.getY());
+                //planetStatus.setDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
 
                 planetStatuses.add(planetStatus);
             } catch (PlanetWithoutSolarSystemException e) {
@@ -291,5 +349,29 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     @Override
     public double getPlanetRotationDegrees(Planet planet, int days) {
         return planet.getDegreesPerDay() * days;
+    }
+
+
+    /**
+     * Private local procedures
+     */
+
+    private int getDaysDifference(LocalDate di, LocalDate df) {
+        return Math.round(DAYS.between(di, df));
+    }
+
+    private LocalDate dateToLocalDate(Date date) {
+        LocalDateTime localDateTime = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        return localDateTime.toLocalDate();
+    }
+
+    private Date sumDays(Date date, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, days);
+        return c.getTime();
     }
 }
