@@ -7,7 +7,10 @@ Correr con:
 $ mvn spring-boot:run
 ```
 
-#### Swagger
-```
-/swagger-ui.html
-```
+### Swagger
+Go to ``http://localhost/`` (root URL) so you can visualize Swagger documentation
+
+### Heroku
+Use branch ``heroku-master`` to push to Heroku cause it has in memory database with HSQLDB so it wont crash
+
+Here you have my App up & running ``https://apal--orbit.herokuapp.com``
