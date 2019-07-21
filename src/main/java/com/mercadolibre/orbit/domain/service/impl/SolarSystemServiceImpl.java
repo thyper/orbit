@@ -31,16 +31,6 @@ public class SolarSystemServiceImpl implements SolarSystemService {
 
     @Override
     public SolarSystem createSolarSystem(SolarSystem solarSystem) {
-
-        if(solarSystem.getRotatedToDate() == null)
-            solarSystem.setRotatedToDate(new Date());
-
-        if(solarSystem.getLastDateRotated() == null)
-            solarSystem.setLastDateRotated(new Date());
-
-        if(solarSystem.getStatus() == null)
-            solarSystem.setStatus(SolarSystemStatus.OK);
-
         return solarSystemRepository.save(solarSystem);
     }
 

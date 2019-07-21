@@ -46,6 +46,15 @@ public class SolarSystem {
 
 
 
+    public SolarSystem() {
+        this.setRotatedToDate(new Date());
+        this.setLastDateRotated(new Date());
+        this.setStatus(SolarSystemStatus.OK);
+    }
+
+
+
+
 
     /**
      * Getters & Setters
