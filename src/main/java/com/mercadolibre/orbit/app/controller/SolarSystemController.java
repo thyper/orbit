@@ -1,13 +1,11 @@
 package com.mercadolibre.orbit.app.controller;
 
 
+import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
+import com.mercadolibre.orbit.app.api.request.PatchSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
-import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
-import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
-import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
-import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.mapstruct.factory.Mappers;
@@ -50,19 +48,34 @@ public class SolarSystemController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PostSolarSystemRequest postSolarSystemRequest) {
 
-        if(solarSystemMapper == null)
-            return new ResponseEntity<>("NULL POINTER", HttpStatus.CONFLICT);
-
-        SolarSystem solarSystem1 = solarSystemService.createSolarSystem(
+        SolarSystem solarSystem = solarSystemService.createSolarSystem(
                 solarSystemMapper.postSolarSystemRequestToSolarSystem(postSolarSystemRequest));
 
-        return new ResponseEntity<>(solarSystem1, HttpStatus.CREATED);
+        return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         solarSystemService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchSolarSystemRequest patchSolarSystemRequest) {
+
+        SolarSystem solarSystem = null;
+        try {
+            solarSystem = solarSystemService.findById(id);
+            solarSystem = solarSystemMapper.patchSolarSystemRequestToSolarSystem(solarSystem, patchSolarSystemRequest);
+            solarSystem = solarSystemService.save(solarSystem);
+        } catch (ResourceNotFoundException e) {
+            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
+                    "Solar System not found",
+                    e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+
+        return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
     }
 
 

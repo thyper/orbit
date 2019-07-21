@@ -1,6 +1,7 @@
 package com.mercadolibre.orbit.app.api.mapper;
 
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
+import com.mercadolibre.orbit.app.api.request.PatchSolarSystemRequest;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,6 +13,13 @@ import org.mapstruct.Mappings;
 
 @Mapper
 public abstract class SolarSystemMapper {
+
+    public SolarSystem patchSolarSystemRequestToSolarSystem(SolarSystem target,
+                                                            PatchSolarSystemRequest source) {
+        target.setName(source.getName() != null ? source.getName() : target.getName());
+        return target;
+    }
+
 
     @Mappings({
             @Mapping(target="name", source="req.name"),
