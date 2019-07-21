@@ -16,7 +16,7 @@ public abstract class SolarSystemMapper {
 
     public SolarSystem patchSolarSystemRequestToSolarSystem(SolarSystem target,
                                                             PatchSolarSystemRequest source) {
-        target.setName(source.getName());
+        target.setName(source.getName() != null ? source.getName() : target.getName());
         return target;
     }
 

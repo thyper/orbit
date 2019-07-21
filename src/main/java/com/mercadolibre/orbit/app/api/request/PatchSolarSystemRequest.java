@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PatchSolarSystemRequest {
 
-    @JsonProperty("name")
+    @JsonProperty(value = "name", required = false)
     private String name;
 
     /*
