@@ -18,9 +18,9 @@ public interface OrbitCalculationService {
 
     Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException;
 
-    Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException;
+    Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException, PlanetNotFoundException;
     double getPlanetsPerimeter(PlanetStatus p1, PlanetStatus p2, PlanetStatus p3);
-    double getPlanetsPerimeter(Planet p1, Planet p2, Planet p3);
+    double getPlanetsPerimeter(Planet p1, Planet p2, Planet p3) throws ResourceNotFoundException;
 
     boolean areAligned(List<Point> planetsPositions) throws InsufficientPlanetsPositionException;
     double getPlanetRotationDegrees(Planet planet, int days);

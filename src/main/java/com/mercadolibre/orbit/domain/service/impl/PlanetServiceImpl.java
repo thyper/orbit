@@ -7,10 +7,13 @@ import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.repository.PlanetRepository;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.PlanetStatusService;
+import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import com.mercadolibre.orbit.domain.service.exception.SolarSystemNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +25,9 @@ public class PlanetServiceImpl implements PlanetService {
 
     @Autowired
     private PlanetStatusService planetStatusService;
+
+    @Autowired
+    private SolarSystemService solarSystemService;
 
 
     @Override
@@ -43,22 +49,48 @@ public class PlanetServiceImpl implements PlanetService {
     }
 
     @Override
-    public Planet save(Planet planet) {
+    public Planet save(Planet planet) throws ResourceNotFoundException {
+
+        if(!planetRepository.existsById(planet.getId()))
+            throw new ResourceNotFoundException(Planet.class, planet.getId());
+
         return planetRepository.save(planet);
     }
 
     @Override
-    public Planet findPlanetById(Long id) {
+    public Planet findPlanetById(Long id) throws ResourceNotFoundException {
+
+        if(!planetRepository.existsById(id))
+            throw new ResourceNotFoundException(Planet.class, id);
+
         return planetRepository.findById(id).orElse(null);
     }
 
     @Override
-    public int countPlanetsBySolarSystem(Long solarSystemId) throws SolarSystemNotFound {
+    public void deleteById(Long id) {
+        planetRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return planetRepository.existsById(id);
+    }
+
+    @Override
+    public int countPlanetsBySolarSystem(Long solarSystemId) throws ResourceNotFoundException {
+
+        if(!solarSystemService.existsById(solarSystemId))
+            throw new ResourceNotFoundException(SolarSystem.class, solarSystemId);
+
         return planetRepository.countBySolarSystem(solarSystemId);
     }
 
     @Override
-    public List<Planet> getFromSolarSystem(SolarSystem solarSystem) throws SolarSystemNotFound {
+    public List<Planet> getFromSolarSystem(SolarSystem solarSystem)  throws ResourceNotFoundException {
+
+        if(!solarSystemService.existsById(solarSystem.getId()))
+            throw new ResourceNotFoundException(SolarSystem.class, solarSystem.getId());
+
         return planetRepository.getFromSolarSystem(solarSystem.getId());
     }
 }

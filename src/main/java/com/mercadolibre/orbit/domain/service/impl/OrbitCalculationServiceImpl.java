@@ -111,14 +111,30 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                             ss.getId(), ss.getName(),
                             ss.getRotatedToDate());
 
-                    solarSystemService.save(ss);
+                    try {
+                        solarSystemService.save(ss);
+                    } catch (ResourceNotFoundException e) {
+                        ss.setStatus(SolarSystemStatus.NEEDS_REVISION);
+                        String msg = String.format("Couldn't persist SolarSystem with ID-%s.. REASONS: %s",
+                                ss.getId(), e.getMessage());
+                        logger.error(msg);
+                    }
                 } catch (InsufficientPlanetsException | AmountOfPlanetsStatusException e) {
                     ss.setStatus(SolarSystemStatus.NEEDS_REVISION);
-                    solarSystemService.save(ss);
 
-                    e.printStackTrace();
+                    logger.error(String.format("SolarSystem with ID-%s NEED REVISION.. REASONS: %s",
+                            ss.getId(), e.getMessage()));
+
+                    try {
+                        solarSystemService.save(ss);
+                    } catch (ResourceNotFoundException e1) {
+                        String msg = String.format("Couldn't persist SolarSystem with ID-%s.. REASONS: %s",
+                                ss.getId(), e1.getMessage());
+                        logger.error(msg);
+                    }
                 } catch (SolarSystemNotFound solarSystemNotFound) {
-                    solarSystemNotFound.printStackTrace();
+                    logger.error(String.format("SolarSystem with ID-%s not registered. NEEDS REVISION. REASONS: %s",
+                            ss.getId(), solarSystemNotFound.getMessage()));
                 }
             }
 
@@ -152,11 +168,22 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         final int solarSystemRelativeDays = 1; // Spin only One Day
 
         // Check planets necessary for status computation
-       if(solarSystemService.countPlanets(solarSystem) != planetsBySolarSystem)
-            throw new InsufficientPlanetsException(solarSystem, planetsBySolarSystem);
+        try {
+            if(solarSystemService.countPlanets(solarSystem) != planetsBySolarSystem)
+                 throw new InsufficientPlanetsException(solarSystem, planetsBySolarSystem);
+        } catch (ResourceNotFoundException e) {
+            throw new SolarSystemNotFound(e.getMessage());
+        }
 
         // Get rotated Planets positions for Weather computation
-        List<Planet> planets = planetService.getFromSolarSystem(solarSystem);
+        List<Planet> planets = null;
+
+        try {
+            planets = planetService.getFromSolarSystem(solarSystem);
+        } catch (ResourceNotFoundException e) {
+            throw new SolarSystemNotFound(e.getMessage());
+        }
+
         List<PlanetStatus> planetStatuses = new ArrayList<>();
 
         for(Planet planet : planets) {
@@ -169,7 +196,9 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 );
 
                 double degreesByDays = getPlanetRotationDegrees(planet, solarSystemRelativeDays);
-                Point point = getPlanetRotationPosition(planet, degreesByDays);     // Calculate new Planet position
+                Point point = null;     // Calculate new Planet position
+
+                point = getPlanetRotationPosition(planet, degreesByDays);
 
                 // Push Planets Status
                 PlanetStatus planetStatus = new PlanetStatus();
@@ -179,7 +208,9 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 planetStatus.setDate(DateUtil.sumDays(solarSystem.getRotatedToDate(), 1));
 
                 planetStatuses.add(planetStatus);
-            } catch (PlanetWithoutSolarSystemException e) {
+            } catch (PlanetWithoutSolarSystemException | PlanetNotFoundException e) {
+                logger.error(String.format("Couldn persist new PlanetStatus for Planet ID-%s .. REASONS: %s",
+                        planet.getId(), e.getMessage()));
                 throw new OrbitCalculationServiceRuntimeException(e.getMessage());
             }
         }
@@ -309,7 +340,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
      * @throws PlanetWithoutSolarSystemException
      */
     @Override
-    public Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException {
+    public Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException, PlanetNotFoundException {
 
         // Get the Solar System gravity center
         SolarSystem solarSystem = planet.getSolarSystem();
@@ -320,7 +351,13 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         Point gravityCenter = new Point(solarSystem.getPosX(), solarSystem.getPosY());
 
         // Rotate Planet using Planet Status last position & Solar System gravity center
-        PlanetStatus planetStatus = planetStatusService.getLastPlanetStatus(planet);
+        PlanetStatus planetStatus = null;
+        try {
+            planetStatus = planetStatusService.getLastPlanetStatus(planet);
+        } catch (ResourceNotFoundException e) {
+            throw new PlanetNotFoundException(e.getMessage());
+        }
+
         Point startedPlanetPosition = new Point(planetStatus.getPositionX(), planetStatus.getPositionY());
 
         logger.info("Last Planet ({}-{}) Status position: x{} y{}",
@@ -352,7 +389,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
      * @return
      */
     @Override
-    public double getPlanetsPerimeter(Planet p1, Planet p2, Planet p3) {
+    public double getPlanetsPerimeter(Planet p1, Planet p2, Planet p3) throws ResourceNotFoundException {
         return getPlanetsPerimeter(
                 planetStatusService.getLastPlanetStatus(p1),
                 planetStatusService.getLastPlanetStatus(p2),

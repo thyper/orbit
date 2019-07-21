@@ -7,6 +7,7 @@ import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,13 @@ public class PlanetController {
     @GetMapping("{id}")
     public ResponseEntity<?> get(@PathVariable("id") Long id) {
 
-        Planet planet = planetService.findPlanetById(id);
-
-        if(planet == null) {
+        Planet planet = null;
+        try {
+            planet = planetService.findPlanetById(id);
+        } catch (ResourceNotFoundException e) {
             ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                     "Planet not found",
-                    "Planet not registered");
+                    e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 
@@ -50,12 +52,13 @@ public class PlanetController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PostPlanetRequest postPlanetRequest) {
 
-        SolarSystem solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
-
-        if(solarSystem == null) {
+        SolarSystem solarSystem = null;
+        try {
+            solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
+        } catch (ResourceNotFoundException e) {
             ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                     "Solar System not found",
-                    "Solar System not registered");
+                    e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 

@@ -3,15 +3,18 @@ package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
-
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 
 
 public interface OrbitCalculationJobService {
 
-    OrbitCalculationJob get(Long id);
-    OrbitCalculationJob getLast(JobStatus jobStatus);
-    OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob);
     OrbitCalculationJob create();
-    int countJobsByStatus(JobStatus jobStatus);
+    OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob) throws ResourceNotFoundException;
+    OrbitCalculationJob findById(Long id) throws ResourceNotFoundException;
+    boolean existsById(Long id);
+    void deleteById(Long id);
 
+    int countJobsByStatus(JobStatus jobStatus);
+    OrbitCalculationJob getLast(JobStatus jobStatus) throws ResourceNotFoundException;
+    
 }

@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.repository.OrbitCalculationJobRepository;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +25,7 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
     @Autowired
     private OrbitCalculationJobRepository orbitCalculationJobRepository;
 
-    @Override
-    public OrbitCalculationJob get(Long id) {
-        return orbitCalculationJobRepository.findById(id).orElse(null);
-    }
 
-    @Override
-    public OrbitCalculationJob getLast(JobStatus jobStatus) {
-        List<OrbitCalculationJob> orbitCalculationJobList = orbitCalculationJobRepository.getLast(jobStatus, PageRequest.of(0, 1));
-
-        if(orbitCalculationJobList.size() > 0)
-            return orbitCalculationJobList.get(0);
-        else return null;
-    }
-
-    @Override
-    public OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob) {
-        return orbitCalculationJobRepository.save(orbitCalculationJob);
-    }
 
     @Override
     public OrbitCalculationJob create() {
@@ -51,8 +35,50 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
 
 
     @Override
+    public OrbitCalculationJob save(OrbitCalculationJob orbitCalculationJob) throws ResourceNotFoundException {
+
+        if(!orbitCalculationJobRepository.existsById(orbitCalculationJob.getId()))
+            throw new ResourceNotFoundException(OrbitCalculationJob.class, orbitCalculationJob.getId());
+
+        return orbitCalculationJobRepository.save(orbitCalculationJob);
+    }
+
+
+    @Override
+    public OrbitCalculationJob findById(Long id) throws ResourceNotFoundException {
+
+        if(!orbitCalculationJobRepository.existsById(id))
+            throw new ResourceNotFoundException(OrbitCalculationJob.class, id);
+
+        return orbitCalculationJobRepository.findById(id).orElse(null);
+    }
+
+
+    @Override
+    public boolean existsById(Long id) {
+        return orbitCalculationJobRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        orbitCalculationJobRepository.deleteById(id);
+    }
+
+
+    @Override
     public int countJobsByStatus(JobStatus jobStatus) {
         return orbitCalculationJobRepository.countByStatus(jobStatus);
+    }
+
+
+    @Override
+    public OrbitCalculationJob getLast(JobStatus jobStatus) throws ResourceNotFoundException {
+
+        List<OrbitCalculationJob> orbitCalculationJobList = orbitCalculationJobRepository.getLast(jobStatus, PageRequest.of(0, 1));
+
+        if(orbitCalculationJobList.size() > 0)
+            return orbitCalculationJobList.get(0);
+        else throw new ResourceNotFoundException(JobStatus.class, jobStatus.toString());
     }
 
 }
