@@ -1,5 +1,6 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
+import com.mercadolibre.orbit.app.util.DateUtil;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
@@ -67,16 +68,16 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         int solarSystemsRotatedSuccessfully = 0;
 
         for(SolarSystem ss : solarSystems) {
-            logger.info("Spining SolarSystem {}", ss.getId());
+            logger.info("Spining SolarSystem {}-{}", ss.getId(), ss.getName());
 
             // Get last Date when SolarSystem was updated
             int daysWithoutBeenRotated = 0;
             Date ssRotatedToDate = null;
 
             if(ss.getRotatedToDate() != null) {
-                logger.info("Calculating days without being rotated");
                 ssRotatedToDate = ss.getRotatedToDate();
-                daysWithoutBeenRotated = getDaysDifference(dateToLocalDate(ssRotatedToDate), dateToLocalDate(toDate));
+                daysWithoutBeenRotated = DateUtil.getDaysDifference(DateUtil.dateToLocalDate(ssRotatedToDate), DateUtil.dateToLocalDate(toDate));
+                logger.info("{} days without being rotated", daysWithoutBeenRotated);
             }else {
                 ssRotatedToDate = ss.getCreationDate();
                 logger.info("Solar system ever was rotated before");
@@ -90,16 +91,20 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
             // Rotate all the days between
             int daysRotatedSuccessFully = 0;
             for(int i = 0; i < daysWithoutBeenRotated; i++) {
-                logger.info("Spinning SolarSystem {} - {} day", ss.getId(), i);
+                logger.info("Spinning SolarSystem {}-{} | {}/{} day",
+                        ss.getId(), ss.getName(),
+                        i, daysWithoutBeenRotated);
+
                 try {
                     spinSolarSystemOneDay(ss);
                     daysRotatedSuccessFully++;
-                    ss.setRotatedToDate(sumDays(ssRotatedToDate, 1));
+                    ss.setRotatedToDate(DateUtil.sumDays(ssRotatedToDate, 1));
 
                     if(!ss.getStatus().equals(SolarSystemStatus.NEEDS_REVISION))
                         ss.setStatus(SolarSystemStatus.OK);
 
-                    logger.info("Saving solar system {}", ss.getId());
+                    logger.info("Saving solar system {}-{}", ss.getId(), ss.getName());
+
                     solarSystemService.save(ss);
                 } catch (InsufficientPlanetsException | AmountOfPlanetsStatusException e) {
                     ss.setStatus(SolarSystemStatus.NEEDS_REVISION);
@@ -138,7 +143,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         /*
         Planets rotation
          */
-        int solarSystemRelativeDays = 1;
+        final int solarSystemRelativeDays = 1; // Spin only One Day
 
         // Check planets necessary for status computation
        if(solarSystemService.countPlanets(solarSystem) != planetsBySolarSystem)
@@ -158,7 +163,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 );
 
                 double degreesByDays = getPlanetRotationDegrees(planet, solarSystemRelativeDays);
-                Point point = getPlanetRotationPosition(planet, degreesByDays);
+                Point point = getPlanetRotationPosition(planet, degreesByDays);     // Calculate new Planet position
 
                 // Push Planets Status
                 PlanetStatus planetStatus = new PlanetStatus();
@@ -180,6 +185,8 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         /*
         Weather conditions
          */
+        logger.info("Proceeding to compute weather for SolarSystem({}-{})", solarSystem.getId(), solarSystem.getName());
+
         Weather weather = null;
         try {
             weather = getWeatherCondition(
@@ -189,6 +196,8 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         } catch (InsufficientPlanetsPositionException e) {
             throw new OrbitCalculationServiceRuntimeException("Insufficient Planets positions for Weather calculation");
         }
+
+        logger.info("Weather computed: {}", weather.getWeatherStatus().toString());
 
 
         /*
@@ -205,6 +214,8 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
             planetStatusService.create(ps);
         }
 
+        logger.info("SolarSystem({}-{}) planet statuses persisted",
+                solarSystem.getId(), solarSystem.getName());
     }
 
 
@@ -268,7 +279,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 weather.setIntensity(perimeter);
             }else {
                 // If sun is outside Triangle
-                weather = null;
+                weather.setWeatherStatus(WeatherStatus.UNKNOWN);
             }
         }
 
@@ -305,9 +316,21 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         PlanetStatus planetStatus = planetStatusService.getLastPlanetStatus(planet);
         Point startedPlanetPosition = new Point(planetStatus.getPositionX(), planetStatus.getPositionY());
 
+        logger.info("Last Planet ({}-{}) Status position: x{} y{}",
+                planet.getId(), planet.getName(),
+                startedPlanetPosition.getX(), startedPlanetPosition.getY());
+
         // Return new rotated Planet Position
-        return geometryService.rotate(startedPlanetPosition, gravityCenter,
-                planet.getRotationDirection().equals(ClockDirection.CLOCKWISE) ? degrees : degrees * (-1)); // If is COUNTERCLOCKWISE change sign
+        double degreesToRotate = planet.getRotationDirection().equals(ClockDirection.CLOCKWISE) ? degrees : degrees * (-1); // If is COUNTERCLOCKWISE change sign
+
+        logger.info("Rotating {} degrees", degreesToRotate);
+        Point planetNewPoint = geometryService.rotate(startedPlanetPosition, gravityCenter, degreesToRotate);
+
+        logger.info("Planet {}-{} new point: x{} y{}",
+                planet.getId(), planet.getName(),
+                planetNewPoint.getX(), planetNewPoint.getY());
+
+        return planetNewPoint;
     }
 
 
@@ -383,26 +406,4 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     }
 
 
-    /**
-     * Private local procedures
-     */
-
-    private int getDaysDifference(LocalDate di, LocalDate df) {
-        return Math.round(DAYS.between(di, df));
-    }
-
-    private LocalDate dateToLocalDate(Date date) {
-        LocalDateTime localDateTime = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-
-        return localDateTime.toLocalDate();
-    }
-
-    private Date sumDays(Date date, int days) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.DATE, days);
-        return c.getTime();
-    }
 }

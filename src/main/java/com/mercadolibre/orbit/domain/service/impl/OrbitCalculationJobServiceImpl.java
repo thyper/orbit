@@ -46,8 +46,6 @@ public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobServic
     @Override
     public OrbitCalculationJob create() {
         OrbitCalculationJob job = new OrbitCalculationJob();
-        job.setJobStatus(JobStatus.CREATED);
-
         return orbitCalculationJobRepository.save(job);
     }
 

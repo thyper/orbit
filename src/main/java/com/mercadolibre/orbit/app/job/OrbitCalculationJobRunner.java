@@ -1,6 +1,7 @@
 package com.mercadolibre.orbit.app.job;
 
 import com.mercadolibre.orbit.app.job.exception.JobStillRunningRuntimeException;
+import com.mercadolibre.orbit.app.util.DateUtil;
 import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
@@ -56,7 +57,7 @@ public class OrbitCalculationJobRunner {
     public void asyncTaskCalculateOrbitStatus(OrbitCalculationJob job) throws JobStillRunningRuntimeException {
         // Check if there is no Job still running (JobStatus.CREATED)
         OrbitCalculationJob lJobRunning = orbitCalculationJobService.getLast(JobStatus.ONGOING);
-        if(lJobRunning != null && false) {
+        if(lJobRunning != null) {
             // Kill Job and save it
             job.setJobStatus(JobStatus.TERMINATED);
             orbitCalculationJobService.save(job);
@@ -73,8 +74,8 @@ public class OrbitCalculationJobRunner {
         orbitCalculationJobService.save(job);
 
         // Spin Solar Systems to a specific Date
-        final Date today = new Date();
-        SpiningStatus spiningStatus = orbitCalculationService.spinSolarSystems(today);
+        final Date tenYearsLater = DateUtil.sumDays(new Date(), 5);
+        SpiningStatus spiningStatus = orbitCalculationService.spinSolarSystems(new Date());
 
         if(spiningStatus.equals(SpiningStatus.OK))
             job.setJobStatus(JobStatus.SUCCESS);
@@ -83,29 +84,6 @@ public class OrbitCalculationJobRunner {
 
         // Save Job
         orbitCalculationJobService.save(job);
-    }
-
-
-
-
-
-
-
-
-    /*
-    Private Declarations for local use
-     */
-
-    private int getDaysDifference(LocalDate di, LocalDate df) {
-        return Math.round(DAYS.between(di, df));
-    }
-
-    private LocalDate dateToLocalDate(Date date) {
-        LocalDateTime localDateTime = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-
-        return localDateTime.toLocalDate();
     }
 
 }

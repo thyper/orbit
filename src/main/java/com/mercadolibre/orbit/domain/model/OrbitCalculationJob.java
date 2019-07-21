@@ -26,6 +26,11 @@ public class OrbitCalculationJob {
 
 
 
+    public OrbitCalculationJob() {
+        this.setJobStatus(JobStatus.CREATED);
+    }
+
+
 
 
     /*
