@@ -23,12 +23,6 @@ public class SolarSystemController {
     @Autowired
     private SolarSystemService solarSystemService;
 
-    @Autowired
-    private OrbitCalculationJobRunner orbitCalculationJobRunner;
-
-    @Autowired
-    private OrbitCalculationJobService orbitCalculationJobService;
-
     private SolarSystemMapper solarSystemMapper = Mappers.getMapper(SolarSystemMapper.class);
 
 
@@ -69,43 +63,5 @@ public class SolarSystemController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-
-
-    /**
-     * Run OrbitCalculationJobRunner
-     *
-     * @return
-     */
-    @GetMapping("job/{id}")
-    public ResponseEntity<?> getJobStatus(@PathVariable("id") Long id) {
-        OrbitCalculationJob job = orbitCalculationJobService.get(id);
-
-        if(job == null) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Job not found",
-                    "There is no Job registered with that id");
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
-
-        return new ResponseEntity<>(job, HttpStatus.CREATED);
-    }
-
-    /**
-     * Run OrbitCalculationJobRunner and return Job id for later status consult
-     *
-     * @return
-     */
-    @PostMapping("job")
-    public ResponseEntity<?> runJob() {
-        // Creates the Job
-        OrbitCalculationJob job = orbitCalculationJobService.create();
-
-        // Async Task
-        orbitCalculationJobRunner.asyncTaskCalculateOrbitStatus(job);
-
-        // Return Job while task still running for later Job status consult
-        return new ResponseEntity<>(job, HttpStatus.ACCEPTED);
-    }
 
 }
