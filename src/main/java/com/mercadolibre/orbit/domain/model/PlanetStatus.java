@@ -19,6 +19,9 @@ public class PlanetStatus {
     private Long id;
 
     @CreationTimestamp
+    private Date creationDate;
+
+    @NotNull
     private Date date;
 
     @ManyToOne
@@ -97,7 +100,16 @@ public class PlanetStatus {
         return weatherIntensity;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public void setWeatherIntensity(Double weatherIntensity) {
         this.weatherIntensity = weatherIntensity;
     }
+
 }

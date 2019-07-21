@@ -53,7 +53,7 @@ public class OrbitCalculationJobRunner {
      *
      * @return
      */
-    @Scheduled(cron = "0 0 12 * * *")
+    //@Scheduled(cron = "0 0 12 * * *")
     @Async("processExecutor")
     public void asyncTaskCalculateOrbitStatus(OrbitCalculationJob job) throws JobStillRunningRuntimeException {
         // Check if there is no Job still running (JobStatus.CREATED)
