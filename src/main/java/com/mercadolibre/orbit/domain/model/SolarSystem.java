@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,7 +21,7 @@ public class SolarSystem {
     @NotNull
     private String name;
 
-    @NotNull
+    @CreationTimestamp
     private Date creationDate;
 
     @OneToMany(cascade = CascadeType.ALL,
@@ -44,11 +45,7 @@ public class SolarSystem {
 
 
 
-    @PrePersist
-    private void configureCreatedDate() {
-        Date today = new Date(Calendar.getInstance().getTimeInMillis());
-        this.setCreationDate(today);
-    }
+
 
     /**
      * Getters & Setters

@@ -5,6 +5,8 @@ import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.repository.OrbitCalculationJobRepository;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Service
 public class OrbitCalculationJobServiceImpl implements OrbitCalculationJobService {
+
+    private Logger logger = LoggerFactory.getLogger(OrbitCalculationJobServiceImpl.class);
 
     @Autowired
     private OrbitCalculationJobRepository orbitCalculationJobRepository;

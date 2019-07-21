@@ -2,9 +2,11 @@ package com.mercadolibre.orbit.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity(name = "planets")
 @Table(name = "planets")
@@ -13,6 +15,9 @@ public class Planet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreationTimestamp
+    private Date creationDate;
 
 
     @NotNull

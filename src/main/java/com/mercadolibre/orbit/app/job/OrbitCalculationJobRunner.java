@@ -12,6 +12,8 @@ import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.AmountOfPlanetsStatusException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.SolarSystemNotFound;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -40,6 +42,8 @@ public class OrbitCalculationJobRunner {
     @Autowired
     private OrbitCalculationJobService orbitCalculationJobService;
 
+    private Logger logger = LoggerFactory.getLogger(OrbitCalculationJobRunner.class);
+
 
     /**
      * This Scheduled trigger run by cron
@@ -50,10 +54,9 @@ public class OrbitCalculationJobRunner {
     //@Scheduled(cron = "0 0 12 * * *")
     @Async("processExecutor")
     public void asyncTaskCalculateOrbitStatus(OrbitCalculationJob job) throws JobStillRunningRuntimeException {
-
         // Check if there is no Job still running (JobStatus.CREATED)
         OrbitCalculationJob lJobRunning = orbitCalculationJobService.getLast(JobStatus.ONGOING);
-        if(lJobRunning != null) {
+        if(lJobRunning != null && false) {
             // Kill Job and save it
             job.setJobStatus(JobStatus.TERMINATED);
             orbitCalculationJobService.save(job);

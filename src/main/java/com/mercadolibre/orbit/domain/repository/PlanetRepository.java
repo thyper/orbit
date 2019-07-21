@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface PlanetRepository extends JpaRepository<Planet, Long> {
 
-    @Query("SELECT COUNT(p) FROM planets p WHERE solar_systems_id = :id")
+    @Query("SELECT COUNT(p) FROM planets p WHERE p.solarSystem.id = :id")
     Integer countBySolarSystem(@Param("id") Long solarSystemId);
 
-    @Query("SELECT p FROM planets p WHERE solar_systems_id = :ss_id")
+    @Query("SELECT p FROM planets p WHERE p.solarSystem.id = :ss_id")
     List<Planet> getFromSolarSystem(@Param("ss_id") Long solarSystemId);
 
 }

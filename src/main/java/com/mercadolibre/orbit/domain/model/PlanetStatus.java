@@ -19,7 +19,6 @@ public class PlanetStatus {
     private Long id;
 
     @CreationTimestamp
-    @NotNull
     private Date date;
 
     @ManyToOne

@@ -10,6 +10,7 @@ import java.util.List;
 public interface PlanetService {
 
     Planet createPlanet(Planet planet);
+    Planet save(Planet planet);
     Planet findPlanetById(Long id);
 
     int countPlanetsBySolarSystem(Long solarSystemId) throws SolarSystemNotFound;

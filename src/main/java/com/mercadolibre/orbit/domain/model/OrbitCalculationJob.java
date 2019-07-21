@@ -18,7 +18,6 @@ public class OrbitCalculationJob {
     private Long id;
 
     @CreationTimestamp
-    @NotNull
     private Date creationDate;
 
     @Enumerated(EnumType.STRING)
@@ -26,10 +25,7 @@ public class OrbitCalculationJob {
     private JobStatus jobStatus;
 
 
-    @PrePersist
-    private void setCreationDate() {
-        this.setCreationDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-    }
+
 
 
     /*
