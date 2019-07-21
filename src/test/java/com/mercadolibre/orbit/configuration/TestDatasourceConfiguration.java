@@ -27,7 +27,7 @@ public class TestDatasourceConfiguration {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-        dataSource.setUrl("jdbc:hsqldb:mem:test");
+        dataSource.setUrl("jdbc:hsqldb:mem:test;DB_CLOSE_DELAY=-1");
         //dataSource.setUrl("jdbc:hsqldb:~/test");
         dataSource.setUsername("root");
         dataSource.setPassword("root");

@@ -1,5 +1,6 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
+import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.Planet;
 import com.mercadolibre.orbit.domain.model.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
@@ -32,6 +33,7 @@ public class PlanetServiceImpl implements PlanetService {
         planetStatus.setPlanet(p);
         planetStatus.setPositionX(planet.getSunDistance());
         planetStatus.setPositionY(0D);
+        planetStatus.setWeatherStatus(WeatherStatus.DROUGHT);
 
         planetStatusService.create(planetStatus);
 
