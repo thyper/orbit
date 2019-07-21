@@ -83,7 +83,6 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
                 ssRotatedToDate = ss.getCreationDate();
                 logger.info("Solar system ever was rotated before");
             }
-            logger.info("{} days without being rotated", daysWithoutBeenRotated);
 
             // If SolarSystem is updated continue
             if(daysWithoutBeenRotated <= 0)

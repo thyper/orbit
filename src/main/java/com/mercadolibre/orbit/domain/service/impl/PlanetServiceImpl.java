@@ -11,6 +11,7 @@ import com.mercadolibre.orbit.domain.service.exception.SolarSystemNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,6 +35,7 @@ public class PlanetServiceImpl implements PlanetService {
         planetStatus.setPositionX(planet.getSunDistance());
         planetStatus.setPositionY(0D);
         planetStatus.setWeatherStatus(WeatherStatus.DROUGHT);
+        planetStatus.setDate(new Date());
 
         planetStatusService.create(planetStatus);
 
