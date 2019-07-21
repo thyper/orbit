@@ -1,14 +1,17 @@
 # Orbit Calculation Service
 
-Ejercicio practico de Spring Boot de un servicio para el calculo de orbitas de planetas en sistema solares; transformaciones de rotacion en un espacio bidimensional y calculo de clima segun posiciones en el plano
+Practical Spring Boot exercise of a service for the calculation of orbits of planets in solar system; transformations of rotation in a two-dimensional space and calculation of climate according to positions in the plane
 
-Correr con:
-```
-$ mvn spring-boot:run
-```
+
+### Setting up
+Configure `application.properties` the database connection and you are ready to go
+
+Run with: ``$ mvn spring-boot:run``
+
 
 ### Swagger
 Go to ``http://localhost/`` (root URL) so you can visualize Swagger documentation
+
 
 ### Heroku
 Use branch ``heroku-master`` to push to Heroku cause it has in memory database with HSQLDB so it wont crash
