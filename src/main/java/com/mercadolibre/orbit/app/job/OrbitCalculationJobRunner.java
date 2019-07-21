@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -52,7 +53,7 @@ public class OrbitCalculationJobRunner {
      *
      * @return
      */
-    //@Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     @Async("processExecutor")
     public void asyncTaskCalculateOrbitStatus(OrbitCalculationJob job) throws JobStillRunningRuntimeException {
         // Check if there is no Job still running (JobStatus.CREATED)
