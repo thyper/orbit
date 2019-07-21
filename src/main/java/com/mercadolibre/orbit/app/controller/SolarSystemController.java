@@ -9,6 +9,7 @@ import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.model.SolarSystem;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,13 +33,14 @@ public class SolarSystemController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> get(@PathVariable("id") Long id) {
-        SolarSystem solarSystem = solarSystemService.findById(id);
+        SolarSystem solarSystem = null;
 
-        if(solarSystem == null) {
+        try {
+            solarSystem = solarSystemService.findById(id);
+        } catch (ResourceNotFoundException e) {
             ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                     "Solar System not found",
-                    "Solar System not registered");
-
+                    e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 

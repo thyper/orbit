@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
 import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
+import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,14 @@ public class OrbitCalculationJobController {
      */
     @GetMapping("{id}")
     public ResponseEntity<?> getJobStatus(@PathVariable("id") Long id) {
-        OrbitCalculationJob job = orbitCalculationJobService.get(id);
 
-        if(job == null) {
+        OrbitCalculationJob job = null;
+        try {
+            job = orbitCalculationJobService.findById(id);
+        } catch (ResourceNotFoundException e) {
             ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
                     "Job not found",
-                    "There is no Job registered with that id");
+                    e.getMessage());
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 

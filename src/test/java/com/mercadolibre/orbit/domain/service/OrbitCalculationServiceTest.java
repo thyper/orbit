@@ -9,6 +9,7 @@ import com.mercadolibre.orbit.domain.model.Weather;
 import com.mercadolibre.orbit.domain.model.geometry.Point;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
+import com.mercadolibre.orbit.domain.service.exception.PlanetNotFoundException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetWithoutSolarSystemException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class OrbitCalculationServiceTest  extends GenericTest {
 
 
     @Test
-    public void testGetPlanetRotationPosition() throws PlanetWithoutSolarSystemException {
+    public void testGetPlanetRotationPosition() throws PlanetWithoutSolarSystemException, PlanetNotFoundException {
 
         SolarSystem solarSystem = new SolarSystem();
         solarSystem.setName("Solar System Test");
