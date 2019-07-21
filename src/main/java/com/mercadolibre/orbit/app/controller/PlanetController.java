@@ -1,5 +1,6 @@
 package com.mercadolibre.orbit.app.controller;
 
+import com.mercadolibre.orbit.app.api.request.PatchPlanetRequest;
 import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.PlanetMapper;
 import com.mercadolibre.orbit.app.api.request.PostPlanetRequest;
@@ -64,6 +65,25 @@ public class PlanetController {
 
         Planet planet = planetService.createPlanet(planetMapper.postPlanetRequestToPlanet(postPlanetRequest, solarSystem));
         return new ResponseEntity<>(planet, HttpStatus.CREATED);
+    }
+
+
+    @PatchMapping("{id}")
+    public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchPlanetRequest planetRequest) {
+
+        Planet planet = null;
+        try {
+            planet = planetService.findPlanetById(id);
+            planet = planetMapper.patchPlanetRequestToPlanet(planet, planetRequest);
+            planet = planetService.save(planet);
+        } catch (ResourceNotFoundException e) {
+            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
+                    "Planet not found",
+                    e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+
+        return new ResponseEntity<>(planet, HttpStatus.OK);
     }
 
 }
