@@ -15,6 +15,8 @@ public interface PlanetService {
     void deleteById(Long id);
     boolean existsById(Long id);
 
+    long countPlanets();
+
     int countPlanetsBySolarSystem(Long solarSystemId) throws ResourceNotFoundException;
     List<Planet> getFromSolarSystem(SolarSystem solarSystem) throws ResourceNotFoundException;
 

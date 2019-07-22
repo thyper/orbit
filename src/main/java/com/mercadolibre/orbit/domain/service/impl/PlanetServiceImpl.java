@@ -75,6 +75,11 @@ public class PlanetServiceImpl implements PlanetService {
     }
 
     @Override
+    public long countPlanets() {
+        return planetRepository.count();
+    }
+
+    @Override
     public int countPlanetsBySolarSystem(Long solarSystemId) throws ResourceNotFoundException {
 
         if(!solarSystemService.existsById(solarSystemId))
