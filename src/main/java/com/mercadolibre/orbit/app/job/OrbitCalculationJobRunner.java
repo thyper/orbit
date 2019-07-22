@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -45,6 +46,14 @@ public class OrbitCalculationJobRunner {
 
     /**
      * This Scheduled trigger run by cron
+     */
+    @Scheduled(cron = "0 0 12 * * *")
+    public void runJob() {
+        OrbitCalculationJob job = orbitCalculationJobService.create();
+        asyncTaskCalculateOrbitStatus(job);
+    }
+
+    /**
      * Calls services that spin the Solar System & calculate new Weather of Planets
      *
      * @return
