@@ -1,15 +1,17 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
 
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -72,6 +74,16 @@ public class SolarSystemServiceImpl implements SolarSystemService {
     @Override
     public List<SolarSystem> getAll() {
         return solarSystemRepository.findAll();
+    }
+
+    @Override
+    public List<PlanetStatus> getSolarSystemStatus(SolarSystem solarSystem, Date date) throws ResourceNotFoundException {
+
+        int nPlanets = this.countPlanets(solarSystem);
+
+        return solarSystemRepository.fetchSolarSystemStatus(solarSystem.getId(),
+                date,
+                PageRequest.of(0, nPlanets));
     }
 
 }

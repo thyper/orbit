@@ -3,8 +3,8 @@ package com.mercadolibre.orbit.app.api.mapper;
 
 import com.mercadolibre.orbit.app.api.request.PatchPlanetRequest;
 import com.mercadolibre.orbit.app.api.request.PostPlanetRequest;
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

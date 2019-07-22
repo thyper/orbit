@@ -1,8 +1,8 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-import com.mercadolibre.orbit.domain.model.geometry.Triangle;
+import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.GeometryService;
 import org.springframework.stereotype.Service;
 

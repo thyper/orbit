@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.domain.model.jpa;
 
 
 import com.mercadolibre.orbit.domain.enums.JobStatus;

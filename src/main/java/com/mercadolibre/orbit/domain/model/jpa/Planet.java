@@ -1,7 +1,6 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.domain.model.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import org.hibernate.annotations.CreationTimestamp;
 

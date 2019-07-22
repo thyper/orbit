@@ -1,6 +1,6 @@
 package com.mercadolibre.orbit.domain.repository;
 
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

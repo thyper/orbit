@@ -5,31 +5,23 @@ import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
-import com.mercadolibre.orbit.domain.model.Weather;
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-import com.mercadolibre.orbit.domain.model.geometry.Triangle;
-import com.mercadolibre.orbit.domain.repository.PlanetStatusRepository;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.Weather;
+import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.*;
 import com.mercadolibre.orbit.domain.service.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 
 @Service

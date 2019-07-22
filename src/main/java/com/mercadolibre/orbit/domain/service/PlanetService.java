@@ -1,8 +1,8 @@
 package com.mercadolibre.orbit.domain.service;
 
 
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.mercadolibre.orbit.domain.service;
 
 
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 
 public interface PlanetStatusService {

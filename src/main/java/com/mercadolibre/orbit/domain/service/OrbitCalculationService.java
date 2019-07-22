@@ -2,11 +2,10 @@ package com.mercadolibre.orbit.domain.service;
 
 
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
-import com.mercadolibre.orbit.domain.model.Weather;
-import com.mercadolibre.orbit.domain.model.geometry.Point;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.transients.Weather;
+import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.service.exception.*;
 
 import java.util.Date;

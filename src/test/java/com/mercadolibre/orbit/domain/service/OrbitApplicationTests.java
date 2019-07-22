@@ -1,8 +1,8 @@
 package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.repository.PlanetRepository;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import org.junit.Test;
@@ -13,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import java.util.Calendar;
-import java.util.Date;
 
 
 @RunWith(SpringRunner.class)

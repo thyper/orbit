@@ -3,7 +3,7 @@ package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
 import com.mercadolibre.orbit.domain.enums.JobStatus;
-import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
+import com.mercadolibre.orbit.domain.model.jpa.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.model.geometry;
+package com.mercadolibre.orbit.domain.model.transients;
 
 
 public class Triangle {

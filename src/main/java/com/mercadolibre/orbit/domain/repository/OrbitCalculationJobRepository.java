@@ -1,9 +1,7 @@
 package com.mercadolibre.orbit.domain.repository;
 
 import com.mercadolibre.orbit.domain.enums.JobStatus;
-import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import com.mercadolibre.orbit.domain.model.jpa.OrbitCalculationJob;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -2,12 +2,11 @@ package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
-import com.mercadolibre.orbit.domain.model.SolarSystem;
-import com.mercadolibre.orbit.domain.model.Weather;
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.Weather;
+import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetNotFoundException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetWithoutSolarSystemException;
@@ -17,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class OrbitCalculationServiceTest  extends GenericTest {

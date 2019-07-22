@@ -1,7 +1,7 @@
 package com.mercadolibre.orbit.domain.service;
 
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-import com.mercadolibre.orbit.domain.model.geometry.Triangle;
+import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
