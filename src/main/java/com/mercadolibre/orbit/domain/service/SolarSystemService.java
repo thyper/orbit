@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.service;
 
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 
 import java.util.Date;
@@ -19,4 +20,6 @@ public interface SolarSystemService {
     List<SolarSystem> getAll();
 
     List<PlanetStatus> getSolarSystemStatus(SolarSystem solarSystem, Date date) throws ResourceNotFoundException;
+
+    List<WeatherQuantity> fetchWeatherPronosticsSinceDate(Date date);
 }
