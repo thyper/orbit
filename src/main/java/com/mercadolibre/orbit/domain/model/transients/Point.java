@@ -28,6 +28,11 @@ public class Point {
         this.y = y;
     }
 
+    public Point(Long x, Long y) {
+        this.x = Double.valueOf(x);
+        this.y = Double.valueOf(y);
+    }
+
 
     /**
      * Methods
