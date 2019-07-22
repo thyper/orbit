@@ -9,6 +9,7 @@ import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
 import com.mercadolibre.orbit.app.api.response.PlanetStatusResponse;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import org.mapstruct.factory.Mappers;
@@ -88,6 +89,20 @@ public class SolarSystemController {
     }
 
 
+
+    @GetMapping("pronostics/{date}")
+    public ResponseEntity<?> getWeatherPronostics(@PathVariable("date")
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+
+        List<WeatherQuantity> pronostics = solarSystemService.fetchWeatherPronosticsSinceDate(date);
+
+        return new ResponseEntity<>(pronostics, HttpStatus.OK);
+    }
+
+
+
+
+
     /**
      * Consults Planets Statuses of a Solar System in a determinated Date
      *
@@ -95,7 +110,7 @@ public class SolarSystemController {
      * @param date
      * @return
      */
-    @GetMapping("{id}/status/{date}")
+    @GetMapping("{id}/weather/{date}")
     public ResponseEntity<?> getSolarSystemStatus(@PathVariable("id") Long solarSystemId,
                                                   @PathVariable("date")
                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {

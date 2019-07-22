@@ -3,6 +3,7 @@ package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
@@ -84,6 +85,11 @@ public class SolarSystemServiceImpl implements SolarSystemService {
         return solarSystemRepository.fetchSolarSystemStatus(solarSystem.getId(),
                 date,
                 PageRequest.of(0, nPlanets));
+    }
+
+    @Override
+    public List<WeatherQuantity> fetchWeatherPronosticsSinceDate(Date date) {
+        return solarSystemRepository.getWeatherPronostics(date);
     }
 
 }

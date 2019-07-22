@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.repository;
 
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,5 +27,12 @@ public interface SolarSystemRepository extends JpaRepository<SolarSystem, Long> 
     List<PlanetStatus> fetchSolarSystemStatus(@Param("solar_system_id") Long solarSystemId,
                                               @Param("date") Date date,
                                               Pageable pageable);
+
+
+    @Query("SELECT new com.mercadolibre.orbit.domain.model.transients.WeatherQuantity(ps.weatherStatus, count(ps.weatherStatus)) " +
+            "FROM planets_status ps " +
+            "WHERE date(ps.date) >= date(:date) " +
+            "GROUP BY ps.weatherStatus ")
+    List<WeatherQuantity> getWeatherPronostics(@Param("date") Date date);
 
 }

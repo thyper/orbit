@@ -6,6 +6,7 @@ import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.service.exception.*;
 
 import java.util.Date;
