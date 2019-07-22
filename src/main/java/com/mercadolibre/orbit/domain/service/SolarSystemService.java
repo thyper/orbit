@@ -17,6 +17,8 @@ public interface SolarSystemService {
     boolean existsById(Long id);
 
     int countPlanets(SolarSystem solarSystem) throws ResourceNotFoundException;
+    long countSolarSystems();
+
     List<SolarSystem> getAll();
 
     List<PlanetStatus> getSolarSystemStatus(SolarSystem solarSystem, Date date) throws ResourceNotFoundException;

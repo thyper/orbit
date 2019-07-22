@@ -68,6 +68,11 @@ public class SolarSystemServiceImpl implements SolarSystemService {
     }
 
     @Override
+    public long countSolarSystems() {
+        return solarSystemRepository.count();
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return solarSystemRepository.existsById(id);
     }
