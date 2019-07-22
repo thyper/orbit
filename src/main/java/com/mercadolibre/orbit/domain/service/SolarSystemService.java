@@ -1,8 +1,10 @@
 package com.mercadolibre.orbit.domain.service;
 
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface SolarSystemService {
@@ -16,4 +18,5 @@ public interface SolarSystemService {
     int countPlanets(SolarSystem solarSystem) throws ResourceNotFoundException;
     List<SolarSystem> getAll();
 
+    List<PlanetStatus> getSolarSystemStatus(SolarSystem solarSystem, Date date) throws ResourceNotFoundException;
 }

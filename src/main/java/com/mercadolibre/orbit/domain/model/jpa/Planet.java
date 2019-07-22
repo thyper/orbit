@@ -1,12 +1,13 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.domain.model.jpa;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "planets")
 @Table(name = "planets")
@@ -35,6 +36,12 @@ public class Planet {
     @Enumerated(EnumType.STRING)
     @NotNull
     private ClockDirection rotationDirection;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "planet", orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PlanetStatus> planetStatuses;
 
 
 
@@ -86,7 +93,25 @@ public class Planet {
         return solarSystem;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public List<PlanetStatus> getPlanetStatuses() {
+        return planetStatuses;
+    }
+
+    public void setPlanetStatuses(List<PlanetStatus> planetStatuses) {
+        this.planetStatuses = planetStatuses;
+    }
+
     public void setSolarSystem(SolarSystem solarSystem) {
         this.solarSystem = solarSystem;
     }
+
+
 }

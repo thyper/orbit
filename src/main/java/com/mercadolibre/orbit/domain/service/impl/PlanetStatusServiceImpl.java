@@ -1,7 +1,7 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
-import com.mercadolibre.orbit.domain.model.Planet;
-import com.mercadolibre.orbit.domain.model.PlanetStatus;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.repository.PlanetStatusRepository;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.PlanetStatusService;
@@ -9,9 +9,6 @@ import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PlanetStatusServiceImpl implements PlanetStatusService {

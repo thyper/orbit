@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.domain.model.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
@@ -7,7 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Calendar;
 import java.util.List;
 
 @Entity(name = "solar_systems")

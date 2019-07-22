@@ -1,6 +1,6 @@
 package com.mercadolibre.orbit.domain.service.exception;
 
-import com.mercadolibre.orbit.domain.model.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
 
 public class PlanetWithoutSolarSystemException extends Exception {
 

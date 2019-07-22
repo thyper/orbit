@@ -1,6 +1,6 @@
 package com.mercadolibre.orbit.domain.service.exception;
 
-import com.mercadolibre.orbit.domain.model.SolarSystem;
+import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 
 public class InsufficientPlanetsException extends Exception {
 

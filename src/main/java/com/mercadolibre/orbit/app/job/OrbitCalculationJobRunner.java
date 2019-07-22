@@ -5,7 +5,7 @@ import com.mercadolibre.orbit.app.job.exception.JobStillRunningRuntimeException;
 import com.mercadolibre.orbit.app.util.DateUtil;
 import com.mercadolibre.orbit.domain.enums.JobStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
-import com.mercadolibre.orbit.domain.model.OrbitCalculationJob;
+import com.mercadolibre.orbit.domain.model.jpa.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationService;
 import com.mercadolibre.orbit.domain.service.PlanetService;
@@ -14,6 +14,7 @@ import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,9 @@ import java.util.Date;
 
 @Component
 public class OrbitCalculationJobRunner {
+
+    @Value("${years_to_pronostic}")
+    private int yearsToPronostic;
 
     @Autowired
     private SolarSystemService solarSystemService;
@@ -85,8 +89,8 @@ public class OrbitCalculationJobRunner {
         }
 
         // Spin Solar Systems to a specific Date
-        final Date tenYearsLater = DateUtil.sumDays(new Date(), 5);
-        SpiningStatus spiningStatus = orbitCalculationService.spinSolarSystems(new Date());
+        final Date yearsLater = DateUtil.sumDays(new Date(), 365 * this.yearsToPronostic);
+        SpiningStatus spiningStatus = orbitCalculationService.spinSolarSystems(yearsLater);
 
         if(spiningStatus.equals(SpiningStatus.OK))
             job.setJobStatus(JobStatus.SUCCESS);

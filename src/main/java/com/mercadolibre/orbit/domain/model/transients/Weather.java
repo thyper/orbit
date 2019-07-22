@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.model;
+package com.mercadolibre.orbit.domain.model.transients;
 
 
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;

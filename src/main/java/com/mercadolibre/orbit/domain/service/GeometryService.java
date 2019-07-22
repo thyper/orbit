@@ -1,8 +1,7 @@
 package com.mercadolibre.orbit.domain.service;
 
-import com.mercadolibre.orbit.domain.model.geometry.Point;
-import com.mercadolibre.orbit.domain.model.geometry.Triangle;
-import org.springframework.stereotype.Service;
+import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Triangle;
 
 
 public interface GeometryService {
