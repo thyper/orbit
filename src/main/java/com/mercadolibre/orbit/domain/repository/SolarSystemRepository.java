@@ -23,7 +23,7 @@ public interface SolarSystemRepository extends JpaRepository<SolarSystem, Long> 
             "INNER JOIN planets_status ps ON ps.planet.id = p.id " +
 
             "WHERE ss.id = :solar_system_id " +
-            "AND function('date', ps.date) = function('date', :date) ")
+            "AND ps.date = :date ")
     List<PlanetStatus> fetchSolarSystemStatus(@Param("solar_system_id") Long solarSystemId,
                                               @Param("date") Date date,
                                               Pageable pageable);
@@ -31,8 +31,8 @@ public interface SolarSystemRepository extends JpaRepository<SolarSystem, Long> 
 
     @Query("SELECT new com.mercadolibre.orbit.domain.model.transients.WeatherQuantity(ps.weatherStatus, count(ps.weatherStatus)) " +
             "FROM planets_status ps " +
-            "WHERE function('date', ps.date) >= function('date', :date) " +
-            "GROUP BY ps.weatherStatus ")
+            "WHERE ps.date >= :date " +
+            "GROUP BY ps.weatherStatus  ")
     List<WeatherQuantity> getWeatherPronostics(@Param("date") Date date);
 
 }
