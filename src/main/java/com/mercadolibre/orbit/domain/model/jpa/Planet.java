@@ -17,6 +17,7 @@ public class Planet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Temporal(TemporalType.DATE)
     @CreationTimestamp
     private Date creationDate;
 

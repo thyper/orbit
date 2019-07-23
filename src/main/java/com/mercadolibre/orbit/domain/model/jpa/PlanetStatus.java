@@ -17,9 +17,11 @@ public class PlanetStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Temporal(TemporalType.DATE)
     @CreationTimestamp
     private Date creationDate;
 
+    @Temporal(TemporalType.DATE)
     @NotNull
     private Date date;
 
