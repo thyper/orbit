@@ -32,7 +32,7 @@ public interface SolarSystemRepository extends JpaRepository<SolarSystem, Long> 
     @Query("SELECT new com.mercadolibre.orbit.domain.model.transients.WeatherQuantity(ps.weatherStatus, count(ps.weatherStatus)) " +
             "FROM planets_status ps " +
             "WHERE date(ps.date) >= date(:date) " +
-            "GROUP BY ps.weatherStatus ")
+            "GROUP BY ps.weatherStatus  ")
     List<WeatherQuantity> getWeatherPronostics(@Param("date") Date date);
 
 }
