@@ -39,7 +39,7 @@ public class OrbitCalculationJobController {
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 
-        return new ResponseEntity<>(job, HttpStatus.CREATED);
+        return new ResponseEntity<>(job, HttpStatus.OK);
     }
 
     /**
