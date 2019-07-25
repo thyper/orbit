@@ -58,10 +58,10 @@ public class PlanetController {
             solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
 
             // Allow only 3 planets by SolarSystem
-            if(planetService.countPlanetsBySolarSystem(solarSystem.getId()) > 3) {
+            if(planetService.countPlanetsBySolarSystem(solarSystem.getId()) >= 3) {
                 ApiError apiError = new ApiError(HttpStatus.CONFLICT,
                         "Too many Planets",
-                        "Too many Planets for Solar System. Only 3 Planets are allowd by Solar System");
+                        "Too many Planets for Solar System. Only 3 Planets are allowed by Solar System");
                 return new ResponseEntity<>(apiError, apiError.getStatus());
             }
         } catch (ResourceNotFoundException e) {
