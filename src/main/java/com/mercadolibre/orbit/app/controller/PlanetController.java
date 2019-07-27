@@ -9,6 +9,8 @@ import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,7 @@ public class PlanetController {
 
 
     @GetMapping("{id}")
+    @ApiOperation(value = "GET a Planet by ID")
     public ResponseEntity<?> get(@PathVariable("id") Long id) throws ResourceNotFoundException {
 
         Planet planet = planetService.findPlanetById(id);
@@ -43,6 +46,7 @@ public class PlanetController {
 
 
     @PostMapping
+    @ApiOperation(value = "POST new Planet")
     public ResponseEntity<?> create(@RequestBody PostPlanetRequest postPlanetRequest) throws ResourceNotFoundException {
 
         SolarSystem solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
@@ -61,6 +65,7 @@ public class PlanetController {
 
 
     @PatchMapping("{id}")
+    @ApiOperation(value = "PATCH a Planet")
     public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchPlanetRequest planetRequest) {
 
         Planet planet = null;

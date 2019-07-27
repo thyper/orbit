@@ -6,6 +6,7 @@ import com.mercadolibre.orbit.app.job.OrbitCalculationJobRunner;
 import com.mercadolibre.orbit.domain.model.jpa.OrbitCalculationJob;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationJobService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class OrbitCalculationJobController {
      * @return
      */
     @GetMapping("{id}")
+    @ApiOperation(value = "GET the Job status by it's ID")
     public ResponseEntity<?> getJobStatus(@PathVariable("id") Long id) throws ResourceNotFoundException {
 
         OrbitCalculationJob job = orbitCalculationJobService.findById(id);
@@ -40,6 +42,7 @@ public class OrbitCalculationJobController {
      * @return
      */
     @PostMapping
+    @ApiOperation(value = "POST new Job for Weather calculation. Adynchronous request")
     public ResponseEntity<?> runJob() {
         // Creates the Job
         OrbitCalculationJob job = orbitCalculationJobService.create();
