@@ -71,19 +71,12 @@ public class SolarSystemController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchSolarSystemRequest patchSolarSystemRequest) {
+    public ResponseEntity<?> patch(@PathVariable("id") Long id,
+                                   @RequestBody PatchSolarSystemRequest patchSolarSystemRequest) throws ResourceNotFoundException {
 
-        SolarSystem solarSystem = null;
-        try {
-            solarSystem = solarSystemService.findById(id);
-            solarSystem = solarSystemMapper.patchSolarSystemRequestToSolarSystem(solarSystem, patchSolarSystemRequest);
-            solarSystem = solarSystemService.save(solarSystem);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Solar System not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        SolarSystem solarSystem = solarSystemService.findById(id);
+        solarSystem = solarSystemMapper.patchSolarSystemRequestToSolarSystem(solarSystem, patchSolarSystemRequest);
+        solarSystem = solarSystemService.save(solarSystem);
 
         return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
     }
@@ -113,19 +106,10 @@ public class SolarSystemController {
     @GetMapping("{id}/weather/{date}")
     public ResponseEntity<?> getSolarSystemStatus(@PathVariable("id") Long solarSystemId,
                                                   @PathVariable("date")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) throws ResourceNotFoundException {
 
-        SolarSystem solarSystem = null;
-        List<PlanetStatus> planetStatuses = null;
-        try {
-            solarSystem = solarSystemService.findById(solarSystemId);
-            planetStatuses = solarSystemService.getSolarSystemStatus(solarSystem, date);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Solar System not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        SolarSystem solarSystem = solarSystemService.findById(solarSystemId);
+        List<PlanetStatus> planetStatuses = solarSystemService.getSolarSystemStatus(solarSystem, date);
 
         List<PlanetStatusResponse> pss = new ArrayList<>();
         for(PlanetStatus ps : planetStatuses) {

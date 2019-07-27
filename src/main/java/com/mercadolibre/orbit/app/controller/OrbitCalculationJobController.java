@@ -27,17 +27,9 @@ public class OrbitCalculationJobController {
      * @return
      */
     @GetMapping("{id}")
-    public ResponseEntity<?> getJobStatus(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getJobStatus(@PathVariable("id") Long id) throws ResourceNotFoundException {
 
-        OrbitCalculationJob job = null;
-        try {
-            job = orbitCalculationJobService.findById(id);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Job not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        OrbitCalculationJob job = orbitCalculationJobService.findById(id);
 
         return new ResponseEntity<>(job, HttpStatus.OK);
     }
