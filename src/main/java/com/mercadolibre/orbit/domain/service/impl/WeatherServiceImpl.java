@@ -58,12 +58,12 @@ public class WeatherServiceImpl implements WeatherService {
         // Create Points positions of Planets
         // Points are rounded so the calculation dont fail because the double accuracy
         List<Point> planetsPositions = new ArrayList<>();
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(0).getPositionX()),
-                Math.round(planetStatuses.get(0).getPositionY())));
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(1).getPositionX()),
-                Math.round(planetStatuses.get(1).getPositionY())));
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(2).getPositionX()),
-                Math.round(planetStatuses.get(2).getPositionY())));
+        planetsPositions.add(new Point(planetStatuses.get(0).getPositionX(),
+                planetStatuses.get(0).getPositionY()));
+        planetsPositions.add(new Point(planetStatuses.get(1).getPositionX(),
+                planetStatuses.get(1).getPositionY()));
+        planetsPositions.add(new Point(planetStatuses.get(2).getPositionX(),
+                planetStatuses.get(2).getPositionY()));
 
 
         if(orbitCalculationService.areAligned(planetsPositions)) {

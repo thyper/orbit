@@ -4,7 +4,6 @@ import com.mercadolibre.orbit.app.util.DateUtil;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
-import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
@@ -17,7 +16,6 @@ import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -25,10 +23,9 @@ import java.util.Date;
 import java.util.List;
 
 
-@Service
-public class OrbitCalculationServiceImpl implements OrbitCalculationService {
+public abstract class AbstractOrbitCalculationServiceImpl implements OrbitCalculationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrbitCalculationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractOrbitCalculationServiceImpl.class);
 
     private final int planetsBySolarSystem = 3;
 
@@ -342,32 +339,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     }
 
 
-    /**
-     * Check if all planets positions in a given list are aligned
-     *
-     * @param planetsPositions
-     * @return
-     * @throws InsufficientPlanetsException
-     */
-    @Override
-    public boolean areAligned(List<Point> planetsPositions) throws InsufficientPlanetsPositionException {
 
-        if(planetsPositions.size() < 3)
-            throw new InsufficientPlanetsPositionException(3, planetsPositions.size());
-
-        boolean aligned = true;
-
-        for(int i = 2; i < planetsPositions.size(); i++) {
-
-            Point p1 = planetsPositions.get(i);
-            Point p2 = planetsPositions.get(i -1);
-            Point p3 = planetsPositions.get(i - 2);
-
-            aligned &= GeometryUtils.areCollinear(p1, p2, p3);
-        }
-
-        return aligned;
-    }
 
     @Override
     public double getPlanetRotationDegrees(Planet planet, int days) {
