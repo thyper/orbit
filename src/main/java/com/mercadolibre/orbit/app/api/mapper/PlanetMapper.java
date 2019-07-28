@@ -37,7 +37,8 @@ public abstract class PlanetMapper {
             @Mapping(target="name", source="req.name"),
             @Mapping(target="sunDistance", source="req.sunDistance"),
             @Mapping(target="degreesPerDay", source="req.degreesPerDay"),
-            @Mapping(target="rotationDirection", source="req.rotationDirection")
+            @Mapping(target="rotationDirection", source="req.rotationDirection"),
+            @Mapping(target="radius", source="req.radius")
     })
     public abstract Planet postPlanetRequestToPlanet(PostPlanetRequest req);
 

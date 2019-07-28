@@ -68,18 +68,21 @@ public class DbSeeder {
         Planet p3 = new Planet();
 
         p1.setName("Ferengis");
+        p1.setRadius(10D);
         p1.setSunDistance(500D);
         p1.setDegreesPerDay(1D);
         p1.setRotationDirection(ClockDirection.CLOCKWISE);
         p1.setSolarSystem(solarSystem);
 
         p2.setName("Vulcano");
+        p2.setRadius(10D);
         p2.setSunDistance(1000D);
         p2.setDegreesPerDay(5D);
         p2.setRotationDirection(ClockDirection.COUNTERCLOCKWISE);
         p2.setSolarSystem(solarSystem);
 
         p3.setName("Betasoide");
+        p3.setRadius(10D);
         p3.setSunDistance(2000D);
         p3.setDegreesPerDay(3D);
         p3.setRotationDirection(ClockDirection.CLOCKWISE);
