@@ -47,6 +47,7 @@ public class DbSeeder {
         solarSystem.setName("Milkyway");
         solarSystem.setPosX(0D);
         solarSystem.setPosY(0D);
+        solarSystem.setSunRadius(100D);
 
         // Persist Solar System
         solarSystem = solarSystemService.createSolarSystem(solarSystem);

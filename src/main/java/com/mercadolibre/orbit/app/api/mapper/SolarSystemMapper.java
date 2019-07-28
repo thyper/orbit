@@ -25,7 +25,8 @@ public abstract class SolarSystemMapper {
     @Mappings({
             @Mapping(target="name", source="req.name"),
             @Mapping(target="posX", source="req.posX"),
-            @Mapping(target="posY", source="req.posY")
+            @Mapping(target="posY", source="req.posY"),
+            @Mapping(target="sunRadius", source="req.sunRadius")
     })
     public abstract SolarSystem postSolarSystemRequestToSolarSystem(PostSolarSystemRequest req);
 

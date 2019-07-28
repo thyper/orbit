@@ -35,6 +35,9 @@ public class SolarSystem {
     @NotNull
     private Double posY;
 
+    @NotNull
+    private Double sunRadius;
+
     private Date lastDateRotated;
 
     private Date rotatedToDate;
@@ -130,5 +133,13 @@ public class SolarSystem {
 
     public void setStatus(SolarSystemStatus status) {
         this.status = status;
+    }
+
+    public Double getSunRadius() {
+        return sunRadius;
+    }
+
+    public void setSunRadius(Double sunRadius) {
+        this.sunRadius = sunRadius;
     }
 }
