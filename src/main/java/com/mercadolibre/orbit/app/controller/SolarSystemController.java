@@ -93,19 +93,6 @@ public class SolarSystemController {
 
 
 
-    @GetMapping("pronostics/{date}")
-    @ApiOperation(value = "Get Weather pronostics by a started date (yyyy-mm-dd)")
-    public ResponseEntity<?> getWeatherPronostics(@PathVariable("date")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-
-        List<WeatherQuantity> pronostics = weatherService.fetchWeatherPronosticsSinceDate(date);
-
-        return new ResponseEntity<>(pronostics, HttpStatus.OK);
-    }
-
-
-
-
 
     /**
      * Consults Planets Statuses of a Solar System in a determinated Date
