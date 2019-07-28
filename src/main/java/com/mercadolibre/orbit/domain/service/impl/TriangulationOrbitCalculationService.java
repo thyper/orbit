@@ -56,8 +56,8 @@ public class TriangulationOrbitCalculationService extends AbstractOrbitCalculati
 
             // If the height of the Triangle is less than the radius
             // of any of the Spheres, then there is a line traspassing them
-            aligned &= height <= s1.getRadius() ||
-                    height <= s2.getRadius() ||
+            aligned &= height <= s1.getRadius() &&
+                    height <= s2.getRadius() &&
                     height <= s3.getRadius();
         }
 

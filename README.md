@@ -40,9 +40,11 @@ There are 4 use cases for different weathers:
 3. When Planets form a triangle with sun inside (RAINFALL)
 4. When Planets form a triangle with the sun outside (UNKNOWN)
 
-For the `1` use case it uses straight line formula to detect collinearity between the points location of the planets and the sun
-For the `2` use case it uses the same formula without taking care of the sun
+For the `1` and `2` use case traces a Triangle with all three Planets. Use the greater vector magnitude as the base of the Triangle, and the Planet of the center define the height. In case the height is smaller than the radius of all the Planets then there is a line traspassing all of them. 
+This approach is better than the solution of `v1.0.0` cause the thereshold that define the alignment is defined by the radius of the Planets; so there is no need to be a PERFECT alignment between them when they are close to be aligned. While a line is passing throught them, we can consider that they are already aligned
+
 For the `3` use case it detects the collision between the sun and the triangle slicing the triangle in 3 pieces using the sun position. If the sun is inside all the triangles will have the same direction, and the intensity of the weather will be equal to the triangle perimeter; otherwise the sun is outside
+
 For the `4` use case uses the same collision detection
 
 
@@ -57,3 +59,6 @@ In game development is very popular to use collision detection by shooting a poi
 
 Also this approach is very expensive because the iteration of the bullet
 
+
+
+Porque yo tengo las manias que tiene el perrito cacero; que de donde me regañan me voy y donde me acarician me quedo
