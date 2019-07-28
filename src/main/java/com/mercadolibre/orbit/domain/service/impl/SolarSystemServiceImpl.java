@@ -92,9 +92,4 @@ public class SolarSystemServiceImpl implements SolarSystemService {
                 PageRequest.of(0, nPlanets));
     }
 
-    @Override
-    public List<WeatherQuantity> fetchWeatherPronosticsSinceDate(Date date) {
-        return solarSystemRepository.getWeatherPronostics(date);
-    }
-
 }

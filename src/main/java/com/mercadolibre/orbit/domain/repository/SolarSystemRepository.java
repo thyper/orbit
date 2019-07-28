@@ -29,10 +29,5 @@ public interface SolarSystemRepository extends JpaRepository<SolarSystem, Long> 
                                               Pageable pageable);
 
 
-    @Query("SELECT new com.mercadolibre.orbit.domain.model.transients.WeatherQuantity(ps.weatherStatus, count(ps.weatherStatus)) " +
-            "FROM planets_status ps " +
-            "WHERE ps.date >= :date " +
-            "GROUP BY ps.weatherStatus  ")
-    List<WeatherQuantity> getWeatherPronostics(@Param("date") Date date);
 
 }

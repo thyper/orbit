@@ -14,6 +14,9 @@ public class PostSolarSystemRequest {
     @JsonProperty("pos_y")
     private Double posY;
 
+    @JsonProperty("sun_radius")
+    private Double sunRadius;
+
 
 
 
@@ -42,5 +45,13 @@ public class PostSolarSystemRequest {
 
     public void setPosY(Double posY) {
         this.posY = posY;
+    }
+
+    public Double getSunRadius() {
+        return sunRadius;
+    }
+
+    public void setSunRadius(Double sunRadius) {
+        this.sunRadius = sunRadius;
     }
 }

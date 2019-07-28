@@ -4,19 +4,19 @@ import com.mercadolibre.orbit.app.util.DateUtil;
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.SolarSystemStatus;
 import com.mercadolibre.orbit.domain.enums.SpiningStatus;
-import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.*;
 import com.mercadolibre.orbit.domain.service.exception.*;
+import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -24,10 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 
-@Service
-public class OrbitCalculationServiceImpl implements OrbitCalculationService {
+public abstract class AbstractOrbitCalculationServiceImpl implements OrbitCalculationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrbitCalculationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractOrbitCalculationServiceImpl.class);
 
     private final int planetsBySolarSystem = 3;
 
@@ -42,8 +41,9 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     @Autowired
     private SolarSystemService solarSystemService;
 
+
     @Autowired
-    private GeometryService geometryService;
+    private WeatherService weatherService;
 
 
     /**
@@ -219,8 +219,8 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         Weather weather = null;
         try {
-            weather = getWeatherCondition(
-                    new Point(solarSystem.getPosX(), solarSystem.getPosY()),
+            weather = weatherService.getWeatherCondition(
+                    new Sphere(solarSystem.getPosX(), solarSystem.getPosY(), solarSystem.getSunRadius()),
                     planetStatuses
             );
         } catch (InsufficientPlanetsPositionException e) {
@@ -246,79 +246,6 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
 
         logger.info("SolarSystem({}-{}) planet statuses persisted",
                 solarSystem.getId(), solarSystem.getName());
-    }
-
-
-
-
-
-    /**
-     * Calculate Weather conditions for Solar System
-     *
-     * @param gravityCenter
-     * @param planetStatuses
-     * @return Weather
-     * @throws InsufficientPlanetsException
-     */
-    @Override
-    public Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException {
-
-        // Check planets necessary for status computation
-        if(planetStatuses.size() != planetsBySolarSystem)
-            throw new InsufficientPlanetsPositionException(planetsBySolarSystem, planetStatuses.size());
-
-        // Calculate Weather
-        Weather weather = new Weather();
-
-
-        // Create Points positions of Planets
-        // Points are rounded so the calculation dont fail because the double accuracy
-        List<Point> planetsPositions = new ArrayList<>();
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(0).getPositionX()),
-                Math.round(planetStatuses.get(0).getPositionY())));
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(1).getPositionX()),
-                Math.round(planetStatuses.get(1).getPositionY())));
-        planetsPositions.add(new Point(Math.round(planetStatuses.get(2).getPositionX()),
-                Math.round(planetStatuses.get(2).getPositionY())));
-
-        boolean planetsAligned = areAligned(planetsPositions);
-        if(areAligned(planetsPositions)) {
-            // Add sun
-            planetsPositions.add(gravityCenter);
-
-            // Check alignment with gravity center
-            if(areAligned(planetsPositions)) {
-                // Alignment with sun
-                weather.setWeatherStatus(WeatherStatus.DROUGHT);
-            }else {
-                // Alignment without sun
-                weather.setWeatherStatus(WeatherStatus.OPTIMAL);
-            }
-        }else {
-            // Create planets Triangle
-            Triangle planetsTriangle = new Triangle(
-                    planetsPositions.get(0),
-                    planetsPositions.get(1),
-                    planetsPositions.get(2)
-            );
-
-            // Call GeometryService to check if gravity center is inside Triangle
-            if(geometryService.detectCollision(planetsTriangle, gravityCenter)) {
-                // If sun is inside Triangle
-                double perimeter = getPlanetsPerimeter(planetStatuses.get(0),
-                        planetStatuses.get(1),
-                        planetStatuses.get(2));
-
-                weather.setWeatherStatus(WeatherStatus.RAINFALL);
-                weather.setIntensity(perimeter);
-            }else {
-                // If sun is outside Triangle
-                weather.setWeatherStatus(WeatherStatus.UNKNOWN);
-            }
-        }
-
-
-        return weather;
     }
 
 
@@ -364,7 +291,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         double degreesToRotate = planet.getRotationDirection().equals(ClockDirection.CLOCKWISE) ? degrees : degrees * (-1); // If is COUNTERCLOCKWISE change sign
 
         logger.info("Rotating {} degrees", degreesToRotate);
-        Point planetNewPoint = geometryService.rotate(startedPlanetPosition, gravityCenter, degreesToRotate);
+        Point planetNewPoint = GeometryUtils.rotate(startedPlanetPosition, gravityCenter, degreesToRotate);
 
         logger.info("Planet {}-{} new point: x{} y{}",
                 planet.getId(), planet.getName(),
@@ -405,7 +332,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     @Override
     public double getPlanetsPerimeter(PlanetStatus p1, PlanetStatus p2, PlanetStatus p3) {
 
-        return geometryService.getTrianglePerimeter(new Triangle(
+        return GeometryUtils.getTrianglePerimeter(new Triangle(
                 new Point(p1.getPositionX(), p1.getPositionY()),
                 new Point(p2.getPositionX(), p2.getPositionY()),
                 new Point(p3.getPositionX(), p3.getPositionY())
@@ -413,32 +340,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     }
 
 
-    /**
-     * Check if all planets positions in a given list are aligned
-     *
-     * @param planetsPositions
-     * @return
-     * @throws InsufficientPlanetsException
-     */
-    @Override
-    public boolean areAligned(List<Point> planetsPositions) throws InsufficientPlanetsPositionException {
 
-        if(planetsPositions.size() < 3)
-            throw new InsufficientPlanetsPositionException(3, planetsPositions.size());
-
-        boolean aligned = true;
-
-        for(int i = 2; i < planetsPositions.size(); i++) {
-
-            Point p1 = planetsPositions.get(i);
-            Point p2 = planetsPositions.get(i -1);
-            Point p3 = planetsPositions.get(i - 2);
-
-            aligned &= geometryService.areCollinear(p1, p2, p3);
-        }
-
-        return aligned;
-    }
 
     @Override
     public double getPlanetRotationDegrees(Planet planet, int days) {

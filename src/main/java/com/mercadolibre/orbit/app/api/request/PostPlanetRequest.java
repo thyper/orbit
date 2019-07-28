@@ -17,6 +17,9 @@ public class PostPlanetRequest {
     @JsonProperty("sun_distance")
     private Double sunDistance;
 
+    @JsonProperty("radius")
+    private Double radius;
+
     @JsonProperty("degrees_per_day")
     private Double degreesPerDay;
 
@@ -69,5 +72,13 @@ public class PostPlanetRequest {
 
     public void setRotationDirection(ClockDirection rotationDirection) {
         this.rotationDirection = rotationDirection;
+    }
+
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
     }
 }

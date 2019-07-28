@@ -5,10 +5,6 @@ import javax.validation.constraints.NotNull;
 
 public class Point {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotNull
     private Double x;
 
@@ -48,13 +44,6 @@ public class Point {
      * Getters & Setters
      * @return
      */
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Double getX() {
         return x;

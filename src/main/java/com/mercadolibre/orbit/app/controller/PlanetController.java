@@ -9,6 +9,8 @@ import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,40 +36,26 @@ public class PlanetController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @ApiOperation(value = "GET a Planet by ID")
+    public ResponseEntity<?> get(@PathVariable("id") Long id) throws ResourceNotFoundException {
 
-        Planet planet = null;
-        try {
-            planet = planetService.findPlanetById(id);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Planet not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        Planet planet = planetService.findPlanetById(id);
 
         return new ResponseEntity<>(planet, HttpStatus.OK);
     }
 
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PostPlanetRequest postPlanetRequest) {
+    @ApiOperation(value = "POST new Planet")
+    public ResponseEntity<?> create(@RequestBody PostPlanetRequest postPlanetRequest) throws ResourceNotFoundException {
 
-        SolarSystem solarSystem = null;
-        try {
-            solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
+        SolarSystem solarSystem = solarSystemService.findById(postPlanetRequest.getSolarSystemId());
 
-            // Allow only 3 planets by SolarSystem
-            if(planetService.countPlanetsBySolarSystem(solarSystem.getId()) >= 3) {
-                ApiError apiError = new ApiError(HttpStatus.CONFLICT,
-                        "Too many Planets",
-                        "Too many Planets for Solar System. Only 3 Planets are allowed by Solar System");
-                return new ResponseEntity<>(apiError, apiError.getStatus());
-            }
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Solar System not found",
-                    e.getMessage());
+        // Allow only 3 planets by SolarSystem
+        if(planetService.countPlanetsBySolarSystem(solarSystem.getId()) >= 3) {
+            ApiError apiError = new ApiError(HttpStatus.CONFLICT,
+                    "Too many Planets",
+                    "Too many Planets for Solar System. Only 3 Planets are allowed by Solar System");
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 
@@ -77,6 +65,7 @@ public class PlanetController {
 
 
     @PatchMapping("{id}")
+    @ApiOperation(value = "PATCH a Planet")
     public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchPlanetRequest planetRequest) {
 
         Planet planet = null;

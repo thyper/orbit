@@ -11,7 +11,9 @@ import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
+import io.swagger.annotations.ApiOperation;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +33,10 @@ public class SolarSystemController {
     @Autowired
     private SolarSystemService solarSystemService;
 
+    @Autowired
+    private WeatherService weatherService;
+
+
     private SolarSystemMapper solarSystemMapper = Mappers.getMapper(SolarSystemMapper.class);
     private PlanetStatusMapper planetStatusMapper = Mappers.getMapper(PlanetStatusMapper.class) ;
 
@@ -40,6 +46,7 @@ public class SolarSystemController {
 
 
     @GetMapping("{id}")
+    @ApiOperation(value = "GET a SolarSystem by ID")
     public ResponseEntity<?> get(@PathVariable("id") Long id) {
         SolarSystem solarSystem = null;
 
@@ -56,6 +63,7 @@ public class SolarSystemController {
     }
 
     @PostMapping
+    @ApiOperation(value = "POST new SolarSystem")
     public ResponseEntity<?> create(@RequestBody PostSolarSystemRequest postSolarSystemRequest) {
 
         SolarSystem solarSystem = solarSystemService.createSolarSystem(
@@ -65,40 +73,23 @@ public class SolarSystemController {
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation(value = "Delete a SolarSystem by ID")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         solarSystemService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody PatchSolarSystemRequest patchSolarSystemRequest) {
+    @ApiOperation(value = "PATCH a SolarSystem")
+    public ResponseEntity<?> patch(@PathVariable("id") Long id,
+                                   @RequestBody PatchSolarSystemRequest patchSolarSystemRequest) throws ResourceNotFoundException {
 
-        SolarSystem solarSystem = null;
-        try {
-            solarSystem = solarSystemService.findById(id);
-            solarSystem = solarSystemMapper.patchSolarSystemRequestToSolarSystem(solarSystem, patchSolarSystemRequest);
-            solarSystem = solarSystemService.save(solarSystem);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Solar System not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        SolarSystem solarSystem = solarSystemService.findById(id);
+        solarSystem = solarSystemMapper.patchSolarSystemRequestToSolarSystem(solarSystem, patchSolarSystemRequest);
+        solarSystem = solarSystemService.save(solarSystem);
 
         return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
     }
-
-
-
-    @GetMapping("pronostics/{date}")
-    public ResponseEntity<?> getWeatherPronostics(@PathVariable("date")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-
-        List<WeatherQuantity> pronostics = solarSystemService.fetchWeatherPronosticsSinceDate(date);
-
-        return new ResponseEntity<>(pronostics, HttpStatus.OK);
-    }
-
 
 
 
@@ -111,21 +102,13 @@ public class SolarSystemController {
      * @return
      */
     @GetMapping("{id}/weather/{date}")
+    @ApiOperation(value = "Get Planets Status of a Solar System by it's ID and a specific date (yyyy-mm-dd)")
     public ResponseEntity<?> getSolarSystemStatus(@PathVariable("id") Long solarSystemId,
                                                   @PathVariable("date")
-                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) throws ResourceNotFoundException {
 
-        SolarSystem solarSystem = null;
-        List<PlanetStatus> planetStatuses = null;
-        try {
-            solarSystem = solarSystemService.findById(solarSystemId);
-            planetStatuses = solarSystemService.getSolarSystemStatus(solarSystem, date);
-        } catch (ResourceNotFoundException e) {
-            ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
-                    "Solar System not found",
-                    e.getMessage());
-            return new ResponseEntity<>(apiError, apiError.getStatus());
-        }
+        SolarSystem solarSystem = solarSystemService.findById(solarSystemId);
+        List<PlanetStatus> planetStatuses = solarSystemService.getSolarSystemStatus(solarSystem, date);
 
         List<PlanetStatusResponse> pss = new ArrayList<>();
         for(PlanetStatus ps : planetStatuses) {

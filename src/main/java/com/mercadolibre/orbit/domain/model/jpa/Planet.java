@@ -32,6 +32,9 @@ public class Planet {
     private Double sunDistance;
 
     @NotNull
+    private Double radius;
+
+    @NotNull
     private Double degreesPerDay;
 
     @Enumerated(EnumType.STRING)
@@ -114,5 +117,11 @@ public class Planet {
         this.solarSystem = solarSystem;
     }
 
+    public Double getRadius() {
+        return radius;
+    }
 
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
 }
