@@ -5,10 +5,6 @@ import javax.validation.constraints.NotNull;
 
 public class Point {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotNull
     private Double x;
 
