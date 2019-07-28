@@ -16,8 +16,6 @@ public interface OrbitCalculationService {
 
     SpiningStatus spinSolarSystems(Date toDate);
 
-    Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses) throws InsufficientPlanetsPositionException;
-
     Point getPlanetRotationPosition(Planet planet, double degrees) throws PlanetWithoutSolarSystemException, PlanetNotFoundException;
     double getPlanetsPerimeter(PlanetStatus p1, PlanetStatus p2, PlanetStatus p3);
     double getPlanetsPerimeter(Planet p1, Planet p2, Planet p3) throws ResourceNotFoundException;

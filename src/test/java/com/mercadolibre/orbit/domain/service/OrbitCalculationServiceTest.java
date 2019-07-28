@@ -34,6 +34,9 @@ public class OrbitCalculationServiceTest  extends GenericTest {
     @Autowired
     private OrbitCalculationService orbitCalculationService;
 
+    @Autowired
+    private WeatherService weatherService;
+
 
 
     @Test
@@ -47,9 +50,9 @@ public class OrbitCalculationServiceTest  extends GenericTest {
 
 
         // Test Weather
-        Weather rainfallWeather = orbitCalculationService.getWeatherCondition(gravityCenter, rainfallPlanetStatuses);
-        Weather droughWeather = orbitCalculationService.getWeatherCondition(gravityCenter, droughPlanetStatuses);
-        Weather optimalhWeather = orbitCalculationService.getWeatherCondition(gravityCenter, optimalPlanetStatuses);
+        Weather rainfallWeather = weatherService.getWeatherCondition(gravityCenter, rainfallPlanetStatuses);
+        Weather droughWeather = weatherService.getWeatherCondition(gravityCenter, droughPlanetStatuses);
+        Weather optimalhWeather = weatherService.getWeatherCondition(gravityCenter, optimalPlanetStatuses);
 
         // Tests
         Assert.assertEquals(rainfallWeather.getWeatherStatus(), WeatherStatus.RAINFALL);

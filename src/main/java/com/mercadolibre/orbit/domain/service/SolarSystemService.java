@@ -23,5 +23,4 @@ public interface SolarSystemService {
 
     List<PlanetStatus> getSolarSystemStatus(SolarSystem solarSystem, Date date) throws ResourceNotFoundException;
 
-    List<WeatherQuantity> fetchWeatherPronosticsSinceDate(Date date);
 }

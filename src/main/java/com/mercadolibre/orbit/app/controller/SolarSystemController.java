@@ -11,6 +11,7 @@ import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
+import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import org.mapstruct.factory.Mappers;
@@ -31,6 +32,10 @@ public class SolarSystemController {
 
     @Autowired
     private SolarSystemService solarSystemService;
+
+    @Autowired
+    private WeatherService weatherService;
+
 
     private SolarSystemMapper solarSystemMapper = Mappers.getMapper(SolarSystemMapper.class);
     private PlanetStatusMapper planetStatusMapper = Mappers.getMapper(PlanetStatusMapper.class) ;
@@ -93,7 +98,7 @@ public class SolarSystemController {
     public ResponseEntity<?> getWeatherPronostics(@PathVariable("date")
                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 
-        List<WeatherQuantity> pronostics = solarSystemService.fetchWeatherPronosticsSinceDate(date);
+        List<WeatherQuantity> pronostics = weatherService.fetchWeatherPronosticsSinceDate(date);
 
         return new ResponseEntity<>(pronostics, HttpStatus.OK);
     }
