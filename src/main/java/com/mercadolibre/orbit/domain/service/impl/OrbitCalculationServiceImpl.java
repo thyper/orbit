@@ -13,6 +13,7 @@ import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.*;
 import com.mercadolibre.orbit.domain.service.exception.*;
+import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,6 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     @Autowired
     private SolarSystemService solarSystemService;
 
-    @Autowired
-    private GeometryService geometryService;
 
     @Autowired
     private WeatherService weatherService;
@@ -294,7 +293,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
         double degreesToRotate = planet.getRotationDirection().equals(ClockDirection.CLOCKWISE) ? degrees : degrees * (-1); // If is COUNTERCLOCKWISE change sign
 
         logger.info("Rotating {} degrees", degreesToRotate);
-        Point planetNewPoint = geometryService.rotate(startedPlanetPosition, gravityCenter, degreesToRotate);
+        Point planetNewPoint = GeometryUtils.rotate(startedPlanetPosition, gravityCenter, degreesToRotate);
 
         logger.info("Planet {}-{} new point: x{} y{}",
                 planet.getId(), planet.getName(),
@@ -335,7 +334,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
     @Override
     public double getPlanetsPerimeter(PlanetStatus p1, PlanetStatus p2, PlanetStatus p3) {
 
-        return geometryService.getTrianglePerimeter(new Triangle(
+        return GeometryUtils.getTrianglePerimeter(new Triangle(
                 new Point(p1.getPositionX(), p1.getPositionY()),
                 new Point(p2.getPositionX(), p2.getPositionY()),
                 new Point(p3.getPositionX(), p3.getPositionY())
@@ -364,7 +363,7 @@ public class OrbitCalculationServiceImpl implements OrbitCalculationService {
             Point p2 = planetsPositions.get(i -1);
             Point p3 = planetsPositions.get(i - 2);
 
-            aligned &= geometryService.areCollinear(p1, p2, p3);
+            aligned &= GeometryUtils.areCollinear(p1, p2, p3);
         }
 
         return aligned;

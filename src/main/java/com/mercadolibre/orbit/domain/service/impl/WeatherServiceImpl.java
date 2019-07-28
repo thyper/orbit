@@ -7,11 +7,11 @@ import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
 import com.mercadolibre.orbit.domain.repository.WeatherRepository;
-import com.mercadolibre.orbit.domain.service.GeometryService;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationService;
 import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
+import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +31,6 @@ public class WeatherServiceImpl implements WeatherService {
     @Autowired
     private OrbitCalculationService orbitCalculationService;
 
-    @Autowired
-    private GeometryService geometryService;
 
 
 
@@ -89,7 +87,7 @@ public class WeatherServiceImpl implements WeatherService {
             );
 
             // Call GeometryService to check if gravity center is inside Triangle
-            if(geometryService.detectCollision(planetsTriangle, gravityCenter)) {
+            if(GeometryUtils.detectCollision(planetsTriangle, gravityCenter)) {
                 // If sun is inside Triangle
                 double perimeter = orbitCalculationService.getPlanetsPerimeter(planetStatuses.get(0),
                         planetStatuses.get(1),

@@ -1,17 +1,64 @@
-package com.mercadolibre.orbit.domain.service.impl;
+package com.mercadolibre.orbit.domain.service.util;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
-import com.mercadolibre.orbit.domain.service.GeometryService;
-import org.springframework.stereotype.Service;
 
+public class GeometryUtils {
 
+    /**
+     * Get the angle (radians) of three points
+     *
+     * @param center
+     * @param p0
+     * @param p1
+     * @return
+     */
+    public static double getPointsAngle(Point center, Point p0, Point p1) {
 
+        double p0c = Math.sqrt(Math.pow(center.getX()-p0.getX(),2)+
+                Math.pow(center.getY()-p0.getY(),2)); // p0->c (b)
+        double p1c = Math.sqrt(Math.pow(center.getX()-p1.getX(),2)+
+                Math.pow(center.getY()-p1.getY(),2)); // p1->c (a)
+        double p0p1 = Math.sqrt(Math.pow(p1.getX()-p0.getX(),2)+
+                Math.pow(p1.getY()-p0.getY(),2)); // p0->p1 (c)
 
-@Service
-public class GeometryServiceImpl implements GeometryService {
+        return Math.acos((p1c*p1c+p0c*p0c-p0p1*p0p1)/(2*p1c*p0c));
+    }
 
+    /**
+     * Convert degrees to radians
+     *
+     * @param degrees
+     * @return
+     */
+    public static double degreesToRadians(double degrees) {
+        return degrees * 0.0174533;
+    }
+
+    /**
+     * Convert radians to degrees
+     *
+     * @param radians
+     * @return
+     */
+    public static double radiansToDegrees(double radians) {
+        return radians / 0.0174533;
+    }
+
+    /**
+     * Get a vector magnitude from two Points
+     * @param p1
+     * @param p2
+     * @return
+     */
+    public static double getVectorMagnitude(Point p1, Point p2) {
+        int exponent = 2;
+        return Math.sqrt(
+                Math.pow(p1.getX() - p2.getX(), exponent) +
+                        Math.pow(p1.getY() - p2.getY(), exponent)
+        );
+    }
 
     /**
      * LOCAL Point rotation about a GLOBAL gravity center
@@ -21,10 +68,9 @@ public class GeometryServiceImpl implements GeometryService {
      * @param degrees
      * @return
      */
-    @Override
-    public Point rotate(Point point, Point gravityCenter, double degrees) {
+    public static Point rotate(Point point, Point gravityCenter, double degrees) {
 
-        double radians = degreesToRadians(degrees);
+        double radians = GeometryUtils.degreesToRadians(degrees);
 
         double newX = Math.cos(radians) * (point.getX() - gravityCenter.getX()) -
                 Math.sin(radians) * (point.getY() - gravityCenter.getY()) +
@@ -37,8 +83,7 @@ public class GeometryServiceImpl implements GeometryService {
         return new Point(newX, newY);
     }
 
-    @Override
-    public double getTrianglePerimeter(Triangle triangle) {
+    public static double getTrianglePerimeter(Triangle triangle) {
 
         double perimeter = 0;
 
@@ -49,26 +94,10 @@ public class GeometryServiceImpl implements GeometryService {
         return perimeter;
     }
 
-    @Override
-    public double getVectorMagnitude(Point p1, Point p2) {
-        int exponent = 2;
-        return Math.sqrt(
-                Math.pow(p1.getX() - p2.getX(), exponent) +
-                Math.pow(p1.getY() - p2.getY(), exponent)
-        );
-    }
-
-    @Override
-    public boolean areCollinear(Point p1, Point p2, Point p3) {
+    public static boolean areCollinear(Point p1, Point p2, Point p3) {
         return (p1.getY() - p2.getY()) * (p1.getX() - p3.getX()) ==
                 (p1.getY() - p3.getY()) * (p1.getX() - p2.getX());
     }
-
-    @Override
-    public boolean areCollinear(Point p1, Point p2, Point p3, Point p4) {
-        return areCollinear(p1, p2, p3) && areCollinear(p2, p3, p4);
-    }
-
 
     /**
      * Compute Triangle & Point collision by triangles orientation
@@ -78,8 +107,7 @@ public class GeometryServiceImpl implements GeometryService {
      * @param point
      * @return
      */
-    @Override
-    public boolean detectCollision(Triangle triangle, Point point) {
+    public static boolean detectCollision(Triangle triangle, Point point) {
 
         // Sliced triangles with Point
         Triangle t1 = new Triangle(triangle.getP1(), triangle.getP2(), point);
@@ -91,30 +119,15 @@ public class GeometryServiceImpl implements GeometryService {
                 triangleClockOrientation(t2) == triangleClockOrientation(t3);
     }
 
-
-
-    private double triangleOrientation(Triangle triangle) {
+    private static double triangleOrientation(Triangle triangle) {
         return (triangle.getP1().getX() - triangle.getP3().getX()) *
                 (triangle.getP2().getY() - triangle.getP3().getY()) -
                 (triangle.getP1().getY() - triangle.getP3().getY()) *
-                (triangle.getP2().getX() - triangle.getP3().getX());
+                        (triangle.getP2().getX() - triangle.getP3().getX());
     }
 
-    private ClockDirection triangleClockOrientation(Triangle triangle) {
+    private static ClockDirection triangleClockOrientation(Triangle triangle) {
         return triangleOrientation(triangle) > 0 ? ClockDirection.CLOCKWISE : ClockDirection.COUNTERCLOCKWISE;
-    }
-
-
-
-
-    /**
-     * Convert degrees to radians to perform rotation transformations over points
-     *
-     * @param degrees
-     * @return
-     */
-    private double degreesToRadians(double degrees) {
-        return degrees * 0.0174533;
     }
 
 }
