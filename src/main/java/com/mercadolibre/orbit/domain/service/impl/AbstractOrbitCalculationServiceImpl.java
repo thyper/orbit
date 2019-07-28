@@ -7,6 +7,7 @@ import com.mercadolibre.orbit.domain.enums.SpiningStatus;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
@@ -219,7 +220,7 @@ public abstract class AbstractOrbitCalculationServiceImpl implements OrbitCalcul
         Weather weather = null;
         try {
             weather = weatherService.getWeatherCondition(
-                    new Point(solarSystem.getPosX(), solarSystem.getPosY()),
+                    new Sphere(solarSystem.getPosX(), solarSystem.getPosY(), solarSystem.getSunRadius()),
                     planetStatuses
             );
         } catch (InsufficientPlanetsPositionException e) {

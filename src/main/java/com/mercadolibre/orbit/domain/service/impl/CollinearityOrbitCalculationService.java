@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.service.impl;
 
 
 import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
@@ -20,7 +21,7 @@ public class CollinearityOrbitCalculationService extends AbstractOrbitCalculatio
      * @throws InsufficientPlanetsException
      */
     @Override
-    public boolean areAligned(List<Point> planetsPositions) throws InsufficientPlanetsPositionException {
+    public boolean areAligned(List<Sphere> planetsPositions) throws InsufficientPlanetsPositionException {
 
         if(planetsPositions.size() < 3)
             throw new InsufficientPlanetsPositionException(3, planetsPositions.size());

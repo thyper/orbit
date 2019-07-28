@@ -2,16 +2,14 @@ package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
-import com.mercadolibre.orbit.domain.model.transients.Point;
-import com.mercadolibre.orbit.domain.model.transients.Triangle;
-import com.mercadolibre.orbit.domain.model.transients.Weather;
-import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
+import com.mercadolibre.orbit.domain.model.transients.*;
 import com.mercadolibre.orbit.domain.repository.WeatherRepository;
 import com.mercadolibre.orbit.domain.service.OrbitCalculationService;
 import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +42,7 @@ public class WeatherServiceImpl implements WeatherService {
      * @throws InsufficientPlanetsException
      */
     @Override
-    public Weather getWeatherCondition(Point gravityCenter, List<PlanetStatus> planetStatuses)
+    public Weather getWeatherCondition(Sphere gravityCenter, List<PlanetStatus> planetStatuses)
             throws InsufficientPlanetsPositionException {
 
         // Check planets necessary for status computation
@@ -57,21 +55,25 @@ public class WeatherServiceImpl implements WeatherService {
 
         // Create Points positions of Planets
         // Points are rounded so the calculation dont fail because the double accuracy
-        List<Point> planetsPositions = new ArrayList<>();
-        planetsPositions.add(new Point(planetStatuses.get(0).getPositionX(),
-                planetStatuses.get(0).getPositionY()));
-        planetsPositions.add(new Point(planetStatuses.get(1).getPositionX(),
-                planetStatuses.get(1).getPositionY()));
-        planetsPositions.add(new Point(planetStatuses.get(2).getPositionX(),
-                planetStatuses.get(2).getPositionY()));
+
+        List<Sphere> planetsSpheres = new ArrayList<>();
+        planetsSpheres.add(new Sphere(planetStatuses.get(0).getPositionX(),
+                planetStatuses.get(0).getPositionY(),
+                planetStatuses.get(0).getPlanet().getRadius()));
+        planetsSpheres.add(new Sphere(planetStatuses.get(1).getPositionX(),
+                planetStatuses.get(1).getPositionY(),
+                planetStatuses.get(1).getPlanet().getRadius()));
+        planetsSpheres.add(new Sphere(planetStatuses.get(2).getPositionX(),
+                planetStatuses.get(2).getPositionY(),
+                planetStatuses.get(2).getPlanet().getRadius()));
 
 
-        if(orbitCalculationService.areAligned(planetsPositions)) {
+        if(orbitCalculationService.areAligned(planetsSpheres)) {
             // Add sun
-            planetsPositions.add(gravityCenter);
+            planetsSpheres.add(gravityCenter);
 
             // Check alignment with gravity center
-            if(orbitCalculationService.areAligned(planetsPositions)) {
+            if(orbitCalculationService.areAligned(planetsSpheres)) {
                 // Alignment with sun
                 weather.setWeatherStatus(WeatherStatus.DROUGHT);
             }else {
@@ -81,9 +83,9 @@ public class WeatherServiceImpl implements WeatherService {
         }else {
             // Create planets Triangle
             Triangle planetsTriangle = new Triangle(
-                    planetsPositions.get(0),
-                    planetsPositions.get(1),
-                    planetsPositions.get(2)
+                    planetsSpheres.get(0),
+                    planetsSpheres.get(1),
+                    planetsSpheres.get(2)
             );
 
             // Call GeometryService to check if gravity center is inside Triangle

@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.enums.TriangleType;
 import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
@@ -23,35 +24,41 @@ public class TriangulationOrbitCalculationService extends AbstractOrbitCalculati
     /**
      * Check if all planets positions in a given list are aligned
      *
-     * @param planetsPositions
+     * @param spherePositions
      * @return
      * @throws InsufficientPlanetsException
      */
     @Override
-    public boolean areAligned(List<Point> planetsPositions) throws InsufficientPlanetsPositionException {
+    public boolean areAligned(List<Sphere> spherePositions) throws InsufficientPlanetsPositionException {
 
-        if(planetsPositions.size() < 3)
-            throw new InsufficientPlanetsPositionException(3, planetsPositions.size());
+        if(spherePositions.size() < 3)
+            throw new InsufficientPlanetsPositionException(3, spherePositions.size());
 
         boolean aligned = true;
 
-        for(int i = 2; i < planetsPositions.size(); i++) {
+        for(int i = 2; i < spherePositions.size(); i++) {
 
-            Point p1 = planetsPositions.get(i);
-            Point p2 = planetsPositions.get(i -1);
-            Point p3 = planetsPositions.get(i - 2);
+            Sphere s1 = spherePositions.get(i);
+            Sphere s2 = spherePositions.get(i -1);
+            Sphere s3 = spherePositions.get(i - 2);
 
-            Triangle t = new Triangle(p1, p2, p3);
+            Triangle t = new Triangle(s1, s2, s3);
 
-            // If any of the Planets form a triangle that is not a Scalene
-            // then they are not aligned
-            // TEMPORAL SOLUTION !! Planet radius must replace this sentence
+            // If any of the Planets form a triangle that is not a Scalene then they are not aligned
             if(TriangleUtils.getTriangleType(t) != TriangleType.SCALENE)
                 return false;
 
+            // A Triangle could be in 3 positions
+            // Take always the smaller height of the Triangle because
+            // if Spheres are aligned or close to be aligned then the smaller height
+            // of the Triangle must be taken
             double height = TriangleUtils.getScaleneTriangleSmallerHeight(t);
 
-            aligned &= height >= 0 && height <= 200;
+            // If the height of the Triangle is less than the radius
+            // of any of the Spheres, then there is a line traspassing them
+            aligned &= height <= s1.getRadius() ||
+                    height <= s2.getRadius() ||
+                    height <= s3.getRadius();
         }
 
         return aligned;

@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
@@ -42,7 +43,7 @@ public class OrbitCalculationServiceTest  extends GenericTest {
     @Test
     public void testPlanetWeatherConditions() throws InsufficientPlanetsPositionException {
         // Set Sun position
-        Point gravityCenter = new Point(0D, 0D);
+        Sphere gravityCenter = new Sphere(0D, 0D, 100D);
         List<PlanetStatus> rainfallPlanetStatuses = createPlanetStatusesForRainFallWeatherStatus();
         List<PlanetStatus> droughPlanetStatuses = createPlanetStatusesForDroughWeatherStatus();
         List<PlanetStatus> optimalPlanetStatuses = createPlanetStatusesForOptimalWeatherStatus();
@@ -149,10 +150,10 @@ public class OrbitCalculationServiceTest  extends GenericTest {
      */
     @Test
     public void testPlanetsPositionAlignment() throws InsufficientPlanetsPositionException {
-        List<Point> planetsPositions = new ArrayList<>();
-        planetsPositions.add(new Point(1D, 0D));
-        planetsPositions.add(new Point(2D, 0D));
-        planetsPositions.add(new Point(3D, 0D));
+        List<Sphere> planetsPositions = new ArrayList<>();
+        planetsPositions.add(new Sphere(1D, 0D, 10D));
+        planetsPositions.add(new Sphere(2D, 0D, 10D));
+        planetsPositions.add(new Sphere(3D, 0D, 10D));
 
         // Assert if planets are aligned
         Assert.assertTrue(orbitCalculationService.areAligned(planetsPositions));
