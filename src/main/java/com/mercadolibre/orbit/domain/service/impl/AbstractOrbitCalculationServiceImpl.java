@@ -13,7 +13,7 @@ import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.*;
 import com.mercadolibre.orbit.domain.service.exception.*;
-import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
+import com.mercadolibre.orbit.domain.util.GeometryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,11 @@
 package com.mercadolibre.orbit.domain.service.impl;
 
 import com.mercadolibre.orbit.domain.enums.TriangleType;
-import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
-import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
-import com.mercadolibre.orbit.domain.service.util.TriangleUtils;
+import com.mercadolibre.orbit.domain.util.TriangleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;

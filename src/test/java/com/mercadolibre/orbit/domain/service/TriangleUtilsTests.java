@@ -3,7 +3,7 @@ package com.mercadolibre.orbit.domain.service;
 import com.mercadolibre.orbit.domain.enums.TriangleType;
 import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
-import com.mercadolibre.orbit.domain.service.util.TriangleUtils;
+import com.mercadolibre.orbit.domain.util.TriangleUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;

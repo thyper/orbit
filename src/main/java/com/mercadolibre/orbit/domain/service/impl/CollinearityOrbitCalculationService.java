@@ -5,7 +5,7 @@ import com.mercadolibre.orbit.domain.model.transients.Point;
 import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
-import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
+import com.mercadolibre.orbit.domain.util.GeometryUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

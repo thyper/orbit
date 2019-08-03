@@ -1,12 +1,9 @@
-package com.mercadolibre.orbit.domain.service.util;
+package com.mercadolibre.orbit.domain.util;
 
 import com.mercadolibre.orbit.domain.enums.TriangleType;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

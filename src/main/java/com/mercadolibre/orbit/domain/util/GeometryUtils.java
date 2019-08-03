@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.service.util;
+package com.mercadolibre.orbit.domain.util;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.model.transients.Point;
