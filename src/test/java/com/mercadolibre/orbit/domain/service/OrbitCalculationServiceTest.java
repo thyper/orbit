@@ -1,6 +1,5 @@
 package com.mercadolibre.orbit.domain.service;
 
-import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
@@ -8,10 +7,9 @@ import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
-import com.mercadolibre.orbit.domain.service.builder.AlignedSolarSystemOrbitBuilder;
-import com.mercadolibre.orbit.domain.service.builder.SolarSystemOrbitBuilder;
-import com.mercadolibre.orbit.domain.service.builder.SolarSystemOrbitBuilderDirector;
-import com.mercadolibre.orbit.domain.service.builder.TriangledSolarSystemOrbitBuilder;
+import com.mercadolibre.orbit.domain.builder.AlignedSolarSystemOrbitBuilder;
+import com.mercadolibre.orbit.domain.builder.SolarSystemOrbitBuilderDirector;
+import com.mercadolibre.orbit.domain.builder.TriangledSolarSystemOrbitBuilder;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetNotFoundException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetWithoutSolarSystemException;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 

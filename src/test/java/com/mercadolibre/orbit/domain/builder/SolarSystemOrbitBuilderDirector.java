@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.service.builder;
+package com.mercadolibre.orbit.domain.builder;
 
 
 public class SolarSystemOrbitBuilderDirector {

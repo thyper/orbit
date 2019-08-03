@@ -14,7 +14,7 @@ Go to ``http://localhost:PORT/`` (root URL) so you can visualize Swagger documen
 
 The Dates format must be `yyyy-mm-dd`
 
-The last 2 GET requests of `solar-system-controller` are for pronostics consultation. After the Job is executed there will be weather information of the Planets Status to retrieve
+The last GET request of `solar-system-controller`; and `weather-controller` are for pronostics consultation. After the Job is executed there will be weather information of the Planets Status to retrieve
 
 There are entities attributes that you cannot PATCH, like SolarSystem positions and Planets sun distance because it carries to modify lot of data related to the PlanetStatus positions & weather. For this version is not programmed this patching, taking care about the performance issues that is still in design
 

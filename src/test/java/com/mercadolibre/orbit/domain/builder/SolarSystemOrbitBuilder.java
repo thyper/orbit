@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.service.builder;
+package com.mercadolibre.orbit.domain.builder;
 
 
 import com.mercadolibre.orbit.domain.model.jpa.Planet;

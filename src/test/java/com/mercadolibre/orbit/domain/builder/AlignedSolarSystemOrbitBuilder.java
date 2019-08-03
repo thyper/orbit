@@ -1,4 +1,4 @@
-package com.mercadolibre.orbit.domain.service.builder;
+package com.mercadolibre.orbit.domain.builder;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.enums.WeatherStatus;
@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TriangledSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder {
+public class AlignedSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder {
+
     private SolarSystem solarSystem;
     private List<Planet> planets;
     private List<PlanetStatus> planetStatuses;
 
-    private boolean sunInside;
+    private double sunDelta;
 
-    public TriangledSolarSystemOrbitBuilder(boolean sunInside) {
-        this.sunInside = sunInside;
+    public AlignedSolarSystemOrbitBuilder(double sunDelta) {
+        this.sunDelta = sunDelta;
     }
 
 
@@ -31,8 +32,9 @@ public class TriangledSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder
     }
 
     @Override
-    public TriangledSolarSystemOrbitBuilder setSolarSystem() {
+    public AlignedSolarSystemOrbitBuilder setSolarSystem() {
 
+        SolarSystem solarSystem = new SolarSystem();
         solarSystem.setName("Milkyway");
         solarSystem.setPosX(0D);
         solarSystem.setPosY(0D);
@@ -43,7 +45,7 @@ public class TriangledSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder
     }
 
     @Override
-    public TriangledSolarSystemOrbitBuilder setPlanets() {
+    public AlignedSolarSystemOrbitBuilder setPlanets() {
 
         Planet p1 = new Planet();
         p1.setName("Ferengis");
@@ -69,7 +71,7 @@ public class TriangledSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder
         p3.setSolarSystem(solarSystem);
         p3.setRadius(10D);
 
-
+        List<Planet> planets = new ArrayList<>();
         planets.add(p1);
         planets.add(p2);
         planets.add(p3);
@@ -80,44 +82,34 @@ public class TriangledSolarSystemOrbitBuilder implements SolarSystemOrbitBuilder
     }
 
     @Override
-    public TriangledSolarSystemOrbitBuilder setPlanetsStatuses() {
+    public AlignedSolarSystemOrbitBuilder setPlanetsStatuses() {
 
         Planet p1 = planets.get(0);
         Planet p2 = planets.get(1);
         Planet p3 = planets.get(2);
 
         PlanetStatus ps1 = new PlanetStatus();
-        PlanetStatus ps2 = new PlanetStatus();
-        PlanetStatus ps3 = new PlanetStatus();
-
-
-        // If Sun is inside kick all orbits using sun radius difference
-        double separationDelta = 100;                                                   // Separation between the three points
-        double sunDelta = getSolarSystem().getSunRadius() * separationDelta * 2;        // Delta with sun
-
-
-        WeatherStatus wStatus = sunInside ? WeatherStatus.RAINFALL : WeatherStatus.UNKNOWN;
-
         ps1.setPlanet(p1);
-        ps1.setWeatherStatus(wStatus);
+        ps1.setPositionX(p1.getSunDistance());
+        ps1.setPositionY(sunDelta);
+        ps1.setWeatherStatus(WeatherStatus.DROUGHT);
         ps1.setDate(new Date());
-        ps1.setPositionX(sunInside ? 100D : 100D + sunDelta);
-        ps1.setPositionY(sunInside ? -100D : -100D + sunDelta);
 
+        PlanetStatus ps2 = new PlanetStatus();
         ps2.setPlanet(p2);
-        ps2.setWeatherStatus(wStatus);
+        ps2.setPositionX(p2.getSunDistance());
+        ps2.setPositionY(sunDelta);
+        ps2.setWeatherStatus(WeatherStatus.DROUGHT);
         ps2.setDate(new Date());
-        ps2.setPositionX(sunInside ? 0D : 0D + sunDelta);
-        ps2.setPositionY(sunInside ? 100D : 100D + sunDelta);
 
+        PlanetStatus ps3 = new PlanetStatus();
         ps3.setPlanet(p3);
-        ps3.setWeatherStatus(wStatus);
+        ps3.setPositionX(p3.getSunDistance());
+        ps3.setPositionY(sunDelta);
+        ps3.setWeatherStatus(WeatherStatus.DROUGHT);
         ps3.setDate(new Date());
-        ps3.setPositionX(sunInside ? -100D : -100D + sunDelta);
-        ps3.setPositionY(sunInside ? -100D : -100D + sunDelta);
 
-
-
+        planetStatuses = new ArrayList<>();
         planetStatuses.add(ps1);
         planetStatuses.add(ps2);
         planetStatuses.add(ps3);
