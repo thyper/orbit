@@ -61,7 +61,7 @@ Nevertheless we don't need to trace a bullet in the plane because we are working
 
 It forces a one dimensional comparison sgregating two by two Planets, and the height of that Triangle define the distance between them. If the three of them are collisioning in the one-dimension then there must be an alignment taking place
 
-In the image below you can see when three Planets are NOT collisioning in the second dimension, but they are in the first dimension
+In the image below you can see when three Planets are NOT collisioning in the second dimension, but they are in the first dimension. And so they are aligned
 ![](https://raw.github.com/apal7/orbit/master/images/triangle_alignment.jpg)
 
 
