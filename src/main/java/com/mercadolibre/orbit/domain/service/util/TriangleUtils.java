@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -65,17 +67,10 @@ public class TriangleUtils {
         heights.add(mg3 * Math.sin(GeometryUtils.getPointsAngle(t.getP3(), t.getP1(), t.getP2())));
         heights.add(mg1 * Math.sin(GeometryUtils.getPointsAngle(t.getP1(), t.getP2(), t.getP3())));
 
-        // Seek smaller height of Triangles in different positions
-        double tSmallerHeight = 0;
-        for(int i = 0; i < heights.size(); i++) {
-            if(i == 0) {
-                tSmallerHeight = heights.get(i);
-                continue;
-            }
-            if(heights.get(i) < tSmallerHeight) tSmallerHeight = heights.get(i);
-        }
+        Collections.sort(heights);
 
-        return tSmallerHeight;
+        // Return smaller height
+        return heights.get(0);
     }
 
     public static TriangleType getTriangleType(Triangle triangle) {
