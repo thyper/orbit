@@ -107,11 +107,9 @@ public class TriangleUtils {
     }
 
     public static boolean isScaleneTriangle(Triangle t) {
-        double angle1 = GeometryUtils.getPointsAngle(t.getP1(), t.getP2(), t.getP3());
-        double angle2 = GeometryUtils.getPointsAngle(t.getP2(), t.getP1(), t.getP3());
-        double angle3 = GeometryUtils.getPointsAngle(t.getP3(), t.getP1(), t.getP2());
-
-        return angle1 != angle2 && angle2 != angle3 && angle3 != angle1;
+        if(!isRectangleTriangle(t) && !isEquilateralTriangle(t))
+            return true;
+        else return false;
     }
 
 }

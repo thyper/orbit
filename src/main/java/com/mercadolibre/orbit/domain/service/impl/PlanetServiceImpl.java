@@ -46,6 +46,13 @@ public class PlanetServiceImpl implements PlanetService {
         return p;
     }
 
+    public Planet createPlanet(Planet planet, PlanetStatus planetStatus) {
+        Planet p = planetRepository.save(planet);
+        planetStatusService.create(planetStatus);
+
+        return p;
+    }
+
     @Override
     public Planet save(Planet planet) throws ResourceNotFoundException {
 

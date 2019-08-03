@@ -8,11 +8,17 @@ import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Weather;
 import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.service.builder.AlignedSolarSystemOrbitBuilder;
+import com.mercadolibre.orbit.domain.service.builder.SolarSystemOrbitBuilder;
+import com.mercadolibre.orbit.domain.service.builder.SolarSystemOrbitBuilderDirector;
+import com.mercadolibre.orbit.domain.service.builder.TriangledSolarSystemOrbitBuilder;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetNotFoundException;
 import com.mercadolibre.orbit.domain.service.exception.PlanetWithoutSolarSystemException;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
@@ -39,26 +45,51 @@ public class OrbitCalculationServiceTest  extends GenericTest {
     private WeatherService weatherService;
 
 
+    private static final Logger logger = LoggerFactory.getLogger(OrbitCalculationServiceTest.class);
+
+
 
     @Test
     public void testPlanetWeatherConditions() throws InsufficientPlanetsPositionException {
+
+        // Create Builders & Builder Director
+        AlignedSolarSystemOrbitBuilder alignedWithSunOrbitBuilder = new AlignedSolarSystemOrbitBuilder(0D);
+        AlignedSolarSystemOrbitBuilder alignedWithoutSunOrbitBuilder = new AlignedSolarSystemOrbitBuilder(100D);
+        TriangledSolarSystemOrbitBuilder triangledWithSunOrbitBuilder = new TriangledSolarSystemOrbitBuilder(true);
+        TriangledSolarSystemOrbitBuilder triangledWithoutSunOrbitBuilder = new TriangledSolarSystemOrbitBuilder(false);
+        SolarSystemOrbitBuilderDirector ssOrbitBuilderDirector;
+
+        // Build all Orbits
+        ssOrbitBuilderDirector = new SolarSystemOrbitBuilderDirector(alignedWithSunOrbitBuilder);
+        ssOrbitBuilderDirector.build();
+
+        ssOrbitBuilderDirector = new SolarSystemOrbitBuilderDirector(alignedWithoutSunOrbitBuilder);
+        ssOrbitBuilderDirector.build();
+
+        ssOrbitBuilderDirector = new SolarSystemOrbitBuilderDirector(triangledWithSunOrbitBuilder);
+        ssOrbitBuilderDirector.build();
+
+        ssOrbitBuilderDirector = new SolarSystemOrbitBuilderDirector(triangledWithoutSunOrbitBuilder);
+        ssOrbitBuilderDirector.build();
+
+
+        SolarSystem ss = alignedWithSunOrbitBuilder.getSolarSystem();
+
         // Set Sun position
-        Sphere gravityCenter = new Sphere(0D, 0D, 100D);
-        List<PlanetStatus> rainfallPlanetStatuses = createPlanetStatusesForRainFallWeatherStatus();
-        List<PlanetStatus> droughPlanetStatuses = createPlanetStatusesForDroughWeatherStatus();
-        List<PlanetStatus> optimalPlanetStatuses = createPlanetStatusesForOptimalWeatherStatus();
-
-
+        Sphere gravityCenter = new Sphere(0D, 0D, 50D);
 
         // Test Weather
-        Weather rainfallWeather = weatherService.getWeatherCondition(gravityCenter, rainfallPlanetStatuses);
-        Weather droughWeather = weatherService.getWeatherCondition(gravityCenter, droughPlanetStatuses);
-        Weather optimalhWeather = weatherService.getWeatherCondition(gravityCenter, optimalPlanetStatuses);
+        Weather droughWeather = weatherService.getWeatherCondition(gravityCenter, alignedWithSunOrbitBuilder.getPlanetStatuses());
+        Weather optimalhWeather = weatherService.getWeatherCondition(gravityCenter, alignedWithoutSunOrbitBuilder.getPlanetStatuses());
+        Weather rainfallWeather = weatherService.getWeatherCondition(gravityCenter, triangledWithSunOrbitBuilder.getPlanetStatuses());
+        Weather unknownWeather = weatherService.getWeatherCondition(gravityCenter, triangledWithoutSunOrbitBuilder.getPlanetStatuses());
+
 
         // Tests
-        Assert.assertEquals(rainfallWeather.getWeatherStatus(), WeatherStatus.RAINFALL);
-        Assert.assertEquals(droughWeather.getWeatherStatus(), WeatherStatus.DROUGHT);
-        Assert.assertEquals(optimalhWeather.getWeatherStatus(), WeatherStatus.OPTIMAL);
+        Assert.assertEquals(WeatherStatus.DROUGHT, droughWeather.getWeatherStatus());
+        Assert.assertEquals(WeatherStatus.OPTIMAL, optimalhWeather.getWeatherStatus());
+        Assert.assertEquals(WeatherStatus.RAINFALL, rainfallWeather.getWeatherStatus());
+        Assert.assertEquals(WeatherStatus.UNKNOWN, unknownWeather.getWeatherStatus());
     }
 
 
@@ -66,49 +97,33 @@ public class OrbitCalculationServiceTest  extends GenericTest {
     @Test
     public void testGetPlanetRotationPosition() throws PlanetWithoutSolarSystemException, PlanetNotFoundException {
 
-        SolarSystem solarSystem = new SolarSystem();
-        solarSystem.setName("Solar System Test");
-        solarSystem.setCreationDate(new Date(2019, 8, 28));
-        solarSystem.setPosX(0D);
-        solarSystem.setPosY(0D);
+        AlignedSolarSystemOrbitBuilder alignedOrbitBuilder = new AlignedSolarSystemOrbitBuilder(0D);
+        SolarSystemOrbitBuilderDirector ssOrbitDirector = new SolarSystemOrbitBuilderDirector(alignedOrbitBuilder);
+        ssOrbitDirector.build();
 
-        // Save SolarSystem
+        SolarSystem solarSystem = alignedOrbitBuilder.getSolarSystem();
+        List<Planet> planets = alignedOrbitBuilder.getPlanets();
+        List<PlanetStatus> planetStatuses = alignedOrbitBuilder.getPlanetStatuses();
+
+        Planet p = planets.get(0);
+
+        // Save Solar System
         solarSystem = solarSystemService.createSolarSystem(solarSystem);
-
-
-        Planet planet = new Planet();
-        planet.setName("Ferengis Test Planet");
-        planet.setSolarSystem(solarSystem);
-        planet.setDegreesPerDay(3D);
-        planet.setSunDistance(3000D);
-        planet.setRotationDirection(ClockDirection.COUNTERCLOCKWISE);
-
         // Save Planet
-        planet = planetService.createPlanet(planet);
-
-
-        PlanetStatus planetStatus = new PlanetStatus();
-        planetStatus.setPlanet(planet);
-        planetStatus.setDate(new Date(2019, 7, 18));
-        planetStatus.setPositionX(1D);
-        planetStatus.setPositionY(0D);
-        planetStatus.setWeatherStatus(WeatherStatus.DROUGHT);
-
-
-        // Save PlanetStatus
-        planetStatusService.create(planetStatus);
+        planetService.createPlanet(p, planetStatuses.get(0));
+        // Save PlanetStatuses
 
 
 
         // Rotate and Assert results
-        Point point = orbitCalculationService.getPlanetRotationPosition(planet,  90);
+        Point point = orbitCalculationService.getPlanetRotationPosition(p,  90);
 
         /*
         If a Planet is in [1x, 0y] position and we rotate it 90°
         the planet must end in [0x, 1y] position
          */
         Assert.assertEquals(0D, point.getX(), 0.1D);
-        Assert.assertEquals(-1D, point.getY(), 0.1D);
+        Assert.assertEquals(p.getSunDistance(), point.getY(), 0.1D);
     }
 
 
