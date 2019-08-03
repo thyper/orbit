@@ -28,18 +28,18 @@ public class Sphere extends Point {
     }
 
     public void setPosX(Double posX) {
-        this.setPosX(posX);
+        this.setX(posX);
     }
 
     public Double getPosX() {
-        return this.getPosX();
+        return this.getX();
     }
 
     public void setPosY(Double posY) {
-        this.setPosY(posY);
+        this.setY(posY);
     }
 
     public Double getPosY() {
-        return this.getPosY();
+        return this.getY();
     }
 }

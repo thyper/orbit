@@ -1,10 +1,12 @@
 package com.mercadolibre.orbit.domain.service;
 
-import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.model.jpa.Planet;
+import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.repository.PlanetRepository;
 import com.mercadolibre.orbit.domain.repository.SolarSystemRepository;
+import com.mercadolibre.orbit.domain.service.builder.AlignedSolarSystemOrbitBuilder;
+import com.mercadolibre.orbit.domain.service.builder.SolarSystemOrbitBuilderDirector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
-import java.util.Calendar;
+import java.util.List;
 
 
 @RunWith(SpringRunner.class)
@@ -20,46 +22,33 @@ import java.util.Calendar;
 public class OrbitApplicationTests {
 
 	@Autowired
-    private PlanetRepository planetRepository;
+    private PlanetService planetService;
 
 	@Autowired
-    private SolarSystemRepository solarSystemRepository;
+    private SolarSystemService solarSystemService;
 
 
 
 
 	@Test
 	public void entityCreationAndRelationShip() {
-	    SolarSystem solarSystem = new SolarSystem();
-	    solarSystem.setName("Solar System Name");
-	    solarSystem.setPosX(0D);
-	    solarSystem.setPosY(0D);
-	    solarSystem.setCreationDate(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
 
-	    // Save Solar System
-        solarSystem = solarSystemRepository.save(solarSystem);
+        AlignedSolarSystemOrbitBuilder alignedOrbitBuilder = new AlignedSolarSystemOrbitBuilder(0D);
+        SolarSystemOrbitBuilderDirector alignedOrbitDirector = new SolarSystemOrbitBuilderDirector(alignedOrbitBuilder);
+        alignedOrbitDirector.build();
 
-        Assert.notNull(solarSystem.getId());
+        SolarSystem solarSystem = alignedOrbitBuilder.getSolarSystem();
+        List<Planet> planets = alignedOrbitBuilder.getPlanets();
+        List<PlanetStatus> planetStatuses = alignedOrbitBuilder.getPlanetStatuses();
 
-
-
-
-        Planet planet = new Planet();
-        planet.setName("Planet Name");
-        planet.setDegreesPerDay(10D);
-        planet.setSolarSystem(solarSystem);
-        planet.setRotationDirection(ClockDirection.CLOCKWISE);
-        planet.setSunDistance(10D);
+        // Save Solar System
+        solarSystem = solarSystemService.createSolarSystem(solarSystem);
 
         // Save Planet
-        planetRepository.save(planet);
+        Planet p = planetService.createPlanet(planets.get(0), planetStatuses.get(0));
 
-
-
-
-        SolarSystem ss = solarSystemRepository.findById(solarSystem.getId()).orElse(null);
-        System.out.println(String.format("PLANETS: %s", ss.getPlanets().size()));
-        System.out.println(String.format("SolarSystem creation Date: %s", solarSystem.getCreationDate().toString()));
+        Assert.notNull(solarSystem.getId());
+        Assert.notNull(p.getId());
 	}
 
 }

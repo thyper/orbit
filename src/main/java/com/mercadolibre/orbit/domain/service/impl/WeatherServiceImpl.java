@@ -10,6 +10,8 @@ import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsExcept
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.service.util.GeometryUtils;
 import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,10 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Autowired
     private OrbitCalculationService orbitCalculationService;
+
+
+
+    private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
 
 
 

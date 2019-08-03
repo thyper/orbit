@@ -58,7 +58,3 @@ In game development is very popular to use collision detection by shooting a poi
 2. The second gap is the velocity of the bullet: if the target has a 10units of radius but the velocity of the bullet is 15units per iteration, target wont be detected either
 
 Also this approach is very expensive because the iteration of the bullet
-
-
-
-Porque yo tengo las manias que tiene el perrito cacero; que de donde me regañan me voy y donde me acarician me quedo
