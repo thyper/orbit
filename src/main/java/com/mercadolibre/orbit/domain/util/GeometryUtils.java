@@ -128,7 +128,11 @@ public class GeometryUtils {
      */
     public static boolean detectCollision(Sphere s1, Sphere s2) {
         double spheresDistance = getVectorMagnitude(new Point(s1.getPosX(), s1.getPosY()), new Point(s2.getPosX(), s2.getPosY()));
-        return spheresDistance <= (s1.getRadius() + s2.getRadius());
+        return detectCollision(spheresDistance, s1.getRadius(), s2.getRadius());
+    }
+
+    public static boolean detectCollision(double distance, double radius1, double radius2) {
+        return distance <= (radius1 + radius2);
     }
 
     private static double triangleOrientation(Triangle triangle) {

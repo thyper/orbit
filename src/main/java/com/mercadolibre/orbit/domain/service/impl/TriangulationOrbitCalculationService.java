@@ -43,8 +43,11 @@ public class TriangulationOrbitCalculationService extends AbstractOrbitCalculati
 
             Triangle t = new Triangle(s1, s2, s3);
 
-            // If the Planets form a RECTANGLE or EQUILATERAL Triangle
-            // the three of them are aligned ONLY if two of them are collisioning
+            /**
+             * ALIGNMENT DETECTION
+             * If the Planets form a RECTANGLE or EQUILATERAL Triangle
+             * the three of them are aligned ONLY if two of them are collisioning
+             */
             if(TriangleUtils.getTriangleType(t) == TriangleType.EQUILATERAL ||
                     TriangleUtils.getTriangleType(t) == TriangleType.RECTANGLE) {
 
@@ -61,11 +64,19 @@ public class TriangulationOrbitCalculationService extends AbstractOrbitCalculati
             // of the Triangle must be taken
             double height = TriangleUtils.getScaleneTriangleSmallerHeight(t);
 
-            // If the height of the Triangle is less than the radius
-            // of any of the Spheres, then there is a line traspassing them
-            aligned &= height <= s1.getRadius() &&
-                    height <= s2.getRadius() &&
-                    height <= s3.getRadius();
+
+
+            /**
+             * ALIGNMENT DETECTION
+             * For this alignment detection approach it uses one dimension to detect collision between two Spheres
+             * The distance between two Spheres is determined by the height of the Triangle the three of the Planets form
+             * It segregates by two Spheres and detect collision in the one dimension
+             * If the three of them are collisioning in the one dimension where the distance is determined by the height of
+             * the Triangle, then there must be an alignment taking place
+             */
+            aligned &= GeometryUtils.detectCollision(height, s1.getRadius(), s2.getRadius()) &&
+                    GeometryUtils.detectCollision(height, s2.getRadius(), s3.getRadius()) &&
+                    GeometryUtils.detectCollision(height, s3.getRadius(), s1.getRadius());
         }
 
         return aligned;
