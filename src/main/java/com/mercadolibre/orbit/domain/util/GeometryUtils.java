@@ -2,6 +2,7 @@ package com.mercadolibre.orbit.domain.util;
 
 import com.mercadolibre.orbit.domain.enums.ClockDirection;
 import com.mercadolibre.orbit.domain.model.transients.Point;
+import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 
 public class GeometryUtils {
@@ -117,6 +118,17 @@ public class GeometryUtils {
         return triangleClockOrientation(triangle) == triangleClockOrientation(t1) &&
                 triangleClockOrientation(t1) == triangleClockOrientation(t2) &&
                 triangleClockOrientation(t2) == triangleClockOrientation(t3);
+    }
+
+    /**
+     * Compute Sphere-Sphere collision
+     * @param s1
+     * @param s2
+     * @return
+     */
+    public static boolean detectCollision(Sphere s1, Sphere s2) {
+        double spheresDistance = getVectorMagnitude(new Point(s1.getPosX(), s1.getPosY()), new Point(s2.getPosX(), s2.getPosY()));
+        return spheresDistance <= (s1.getRadius() + s2.getRadius());
     }
 
     private static double triangleOrientation(Triangle triangle) {

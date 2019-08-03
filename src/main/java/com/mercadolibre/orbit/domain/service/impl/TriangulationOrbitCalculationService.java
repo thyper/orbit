@@ -5,6 +5,7 @@ import com.mercadolibre.orbit.domain.model.transients.Sphere;
 import com.mercadolibre.orbit.domain.model.transients.Triangle;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
+import com.mercadolibre.orbit.domain.util.GeometryUtils;
 import com.mercadolibre.orbit.domain.util.TriangleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +43,17 @@ public class TriangulationOrbitCalculationService extends AbstractOrbitCalculati
 
             Triangle t = new Triangle(s1, s2, s3);
 
-            // If any of the Planets form a triangle that is not a Scalene then they are not aligned
-            if(TriangleUtils.getTriangleType(t) != TriangleType.SCALENE)
-                return false;
+            // If the Planets form a RECTANGLE or EQUILATERAL Triangle
+            // the three of them are aligned ONLY if two of them are collisioning
+            if(TriangleUtils.getTriangleType(t) == TriangleType.EQUILATERAL ||
+                    TriangleUtils.getTriangleType(t) == TriangleType.RECTANGLE) {
+
+                // If two of them are collisioning are aligned with the third
+                if(GeometryUtils.detectCollision(s1, s2) || GeometryUtils.detectCollision(s2, s3) ||
+                        GeometryUtils.detectCollision(s3, s1))
+                    return true;
+                else return false;
+            }
 
             // A Triangle could be in 3 positions
             // Take always the smaller height of the Triangle because
