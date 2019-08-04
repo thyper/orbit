@@ -9,6 +9,7 @@ import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsException;
 import com.mercadolibre.orbit.domain.service.exception.InsufficientPlanetsPositionException;
 import com.mercadolibre.orbit.domain.util.GeometryUtils;
+import com.mercadolibre.orbit.domain.util.TriangleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,13 @@ public class WeatherServiceImpl implements WeatherService {
                 planetStatuses.get(2).getPositionY(),
                 planetStatuses.get(2).getPlanet().getRadius()));
 
+        // Create planets Triangle
+        Triangle planetsTriangle = new Triangle(
+                planetsSpheres.get(0),
+                planetsSpheres.get(1),
+                planetsSpheres.get(2)
+        );
+
 
         if(orbitCalculationService.areAligned(planetsSpheres)) {
             // Add sun
@@ -81,30 +89,28 @@ public class WeatherServiceImpl implements WeatherService {
             if(orbitCalculationService.areAligned(planetsSpheres)) {
                 // Alignment with sun
                 weather.setWeatherStatus(WeatherStatus.DROUGHT);
+                weather.setIntensity(GeometryUtils.potentiometer(TriangleUtils.getScaleneTriangleSmallerHeight(planetsTriangle),
+                        100));
             }else {
                 // Alignment without sun
                 weather.setWeatherStatus(WeatherStatus.OPTIMAL);
+                weather.setIntensity(GeometryUtils.potentiometer(TriangleUtils.getScaleneTriangleSmallerHeight(planetsTriangle),
+                        100));
             }
         }else {
-            // Create planets Triangle
-            Triangle planetsTriangle = new Triangle(
-                    planetsSpheres.get(0),
-                    planetsSpheres.get(1),
-                    planetsSpheres.get(2)
-            );
+            double perimeter = orbitCalculationService.getPlanetsPerimeter(planetStatuses.get(0),
+                    planetStatuses.get(1),
+                    planetStatuses.get(2));
 
             // Call GeometryService to check if gravity center is inside Triangle
             if(GeometryUtils.detectCollision(planetsTriangle, gravityCenter)) {
                 // If sun is inside Triangle
-                double perimeter = orbitCalculationService.getPlanetsPerimeter(planetStatuses.get(0),
-                        planetStatuses.get(1),
-                        planetStatuses.get(2));
-
                 weather.setWeatherStatus(WeatherStatus.RAINFALL);
                 weather.setIntensity(perimeter);
             }else {
                 // If sun is outside Triangle
                 weather.setWeatherStatus(WeatherStatus.UNKNOWN);
+                weather.setIntensity(perimeter);
             }
         }
 
