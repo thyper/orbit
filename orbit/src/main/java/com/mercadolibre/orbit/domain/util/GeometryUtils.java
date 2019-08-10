@@ -146,4 +146,19 @@ public class GeometryUtils {
         return triangleOrientation(triangle) > 0 ? ClockDirection.CLOCKWISE : ClockDirection.COUNTERCLOCKWISE;
     }
 
+
+    /**
+     * This function acts as a potentiometer
+     * Map delta between a 0 & maxValue
+     * When delta is 0 the value is at 100. If delta start to increase the value will start to decrease
+     * Useful for weather intensity calculation
+     *
+     * @param delta
+     * @param maxValue
+     * @return
+     */
+    public static double potentiometer(double delta, double maxValue) {
+        return Math.pow(Math.cos(degreesToRadians(delta)), 2) * maxValue;
+    }
+
 }

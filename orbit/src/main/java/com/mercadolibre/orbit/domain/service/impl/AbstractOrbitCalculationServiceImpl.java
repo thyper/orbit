@@ -238,8 +238,10 @@ public abstract class AbstractOrbitCalculationServiceImpl implements OrbitCalcul
         for(PlanetStatus ps : planetStatuses) {
             if(weather == null)
                 ps.setWeatherStatus(null);
-            else
+            else {
                 ps.setWeatherStatus(weather.getWeatherStatus());
+                ps.setWeatherIntensity(weather.getIntensity());
+            }
 
             planetStatusService.create(ps);
         }

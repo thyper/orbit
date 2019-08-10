@@ -10,9 +10,9 @@ import org.mapstruct.Mappings;
 public abstract class PlanetStatusMapper {
 
     @Mappings({
+            @Mapping(source = "source.planet", target = "planet"),
+            @Mapping(ignore = true, target = "planet.solarSystem"),
             @Mapping(source = "source.date", target = "date"),
-            @Mapping(source = "source.planet.id", target = "planetId"),
-            @Mapping(source = "source.planet.name", target = "planetName"),
             @Mapping(source = "source.positionX", target = "positionX"),
             @Mapping(source = "source.weatherStatus", target = "weatherStatus"),
             @Mapping(source = "source.weatherIntensity", target = "weatherIntensity")

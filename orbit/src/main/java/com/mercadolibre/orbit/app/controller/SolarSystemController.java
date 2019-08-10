@@ -43,6 +43,11 @@ public class SolarSystemController {
 
 
 
+    @GetMapping("")
+    @ApiOperation(value = "GET all Solar Systems")
+    public ResponseEntity<?> get() {
+        return new ResponseEntity<>(solarSystemService.getAll(), HttpStatus.OK);
+    }
 
 
     @GetMapping("{id}")
