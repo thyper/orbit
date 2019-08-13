@@ -1,15 +1,19 @@
 package com.mercadolibre.orbit.app.controller;
 
 
+import com.mercadolibre.orbit.app.api.mapper.PlanetMapper;
 import com.mercadolibre.orbit.app.api.mapper.PlanetStatusMapper;
+import com.mercadolibre.orbit.app.api.request.CoarsePostSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.request.PatchSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.response.ApiError;
 import com.mercadolibre.orbit.app.api.mapper.SolarSystemMapper;
 import com.mercadolibre.orbit.app.api.response.PlanetStatusResponse;
+import com.mercadolibre.orbit.domain.model.jpa.Planet;
 import com.mercadolibre.orbit.domain.model.jpa.PlanetStatus;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.model.transients.WeatherQuantity;
+import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.WeatherService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
@@ -34,10 +38,14 @@ public class SolarSystemController {
     private SolarSystemService solarSystemService;
 
     @Autowired
+    private PlanetService planetService;
+
+    @Autowired
     private WeatherService weatherService;
 
 
     private SolarSystemMapper solarSystemMapper = Mappers.getMapper(SolarSystemMapper.class);
+    private PlanetMapper planetMapper = Mappers.getMapper(PlanetMapper.class);
     private PlanetStatusMapper planetStatusMapper = Mappers.getMapper(PlanetStatusMapper.class) ;
 
 
@@ -73,6 +81,29 @@ public class SolarSystemController {
 
         SolarSystem solarSystem = solarSystemService.createSolarSystem(
                 solarSystemMapper.postSolarSystemRequestToSolarSystem(postSolarSystemRequest));
+
+        return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("coarse")
+    @ApiOperation(value = "Creates a whole new Solar System with planets")
+    public ResponseEntity<?> createCoarseSolarSystem(@RequestBody CoarsePostSolarSystemRequest coarsePostSolarSystemRequest) throws ResourceNotFoundException {
+
+        if(coarsePostSolarSystemRequest.getPlanetsRequest().size() != 3) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Insufficient number of Planets",
+                    "You must provide 3 planets for a Solar System to be created");
+            return new ResponseEntity<>(apiError, apiError.getStatus());
+        }
+
+        SolarSystem solarSystem = solarSystemService.createSolarSystem(
+                solarSystemMapper.extractSolarSystem(coarsePostSolarSystemRequest));
+        List<Planet> planets = planetMapper.extractPlanets(coarsePostSolarSystemRequest);
+
+        for(Planet p : planets) {
+            p.setSolarSystem(solarSystem);
+            planetService.createPlanet(p);
+        }
 
         return new ResponseEntity<>(solarSystem, HttpStatus.CREATED);
     }

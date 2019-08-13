@@ -1,5 +1,6 @@
 package com.mercadolibre.orbit.app.api.mapper;
 
+import com.mercadolibre.orbit.app.api.request.CoarsePostSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.request.PostSolarSystemRequest;
 import com.mercadolibre.orbit.app.api.request.PatchSolarSystemRequest;
 import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
@@ -29,5 +30,14 @@ public abstract class SolarSystemMapper {
             @Mapping(target="sunRadius", source="req.sunRadius")
     })
     public abstract SolarSystem postSolarSystemRequestToSolarSystem(PostSolarSystemRequest req);
+
+
+    @Mappings({
+            @Mapping(target="name", source="req.solarSystemRequest.name"),
+            @Mapping(target="posX", source="req.solarSystemRequest.posX"),
+            @Mapping(target="posY", source="req.solarSystemRequest.posY"),
+            @Mapping(target="sunRadius", source="req.solarSystemRequest.sunRadius")
+    })
+    public abstract SolarSystem extractSolarSystem(CoarsePostSolarSystemRequest req);
 
 }

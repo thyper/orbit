@@ -9,7 +9,6 @@ import com.mercadolibre.orbit.domain.model.jpa.SolarSystem;
 import com.mercadolibre.orbit.domain.service.PlanetService;
 import com.mercadolibre.orbit.domain.service.SolarSystemService;
 import com.mercadolibre.orbit.domain.service.exception.ResourceNotFoundException;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class PlanetController {
             return new ResponseEntity<>(apiError, apiError.getStatus());
         }
 
-        Planet planet = planetService.createPlanet(planetMapper.postPlanetRequestToPlanet(postPlanetRequest, solarSystem));
+        Planet planet = planetService.createPlanet(planetMapper.postOrphanPlanetRequestToPlanet(postPlanetRequest, solarSystem));
         return new ResponseEntity<>(planet, HttpStatus.CREATED);
     }
 
