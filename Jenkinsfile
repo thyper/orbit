@@ -1,2 +1,2 @@
 
-deployOrbit()
+VarsPipeline varsPipeline = new VarsPipeline()
