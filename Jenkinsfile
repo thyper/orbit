@@ -1,3 +1,2 @@
 
-VarsPipeline varsPipeline = new VarsPipeline()
-varsPipeline.sayHi()
+Pipeline pipeline = new Pipeline()
